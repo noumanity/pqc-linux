@@ -6,6 +6,15 @@ Depuis les travaux du matématicien Peter Shor en 1994 sur les algorithmes quant
 
 Cette présentation est une revue du sujet qui permettra de maitriser les enjeux en matière de cybersécurité qui affectent les maiteneurs et utilisateurs Linux. Nous discuterons en premier lieux de la prise en charge de ce tenjeux par les organisations de standardisation internationnal et aux mesures de conformités imposés par le Canada pour éviter tout "choc quantique". Puis, nous verrons un peu plus techniquement quels "briques" fondamentales des systèmes linux dû être modifiés. Nous ferons le tour de quelques distributions Linux pour voir comment ils comptent intégrer ces nouveaux mécanismes. Et nous terminerons par une présentation technique portant sur la vérification de l'intégratoin de la Cryptographie Post Quantique (PQC) sur les images Linux.
 
+## Brièvement
+
+Depuis l'algorithme de Shor (1994), on sait qu'un ordinateur quantique suffisamment
+puissant briserait la cryptographie asymétrique actuelle. Avec
+l'échéance estimée autour de 2030 et la menace récolter maintenant, déchiffrer plus tard (HNDL), la migration vers la cryptographie post-quantique (PQC) est déjà en cours.
+Cette présentation fait le tour du sujet, puis examine comment les grandes distributions
+Linux et les images de conteneurs intègrent ces nouveaux mécanismes, démonstration à
+l'appui.
+
 ## Biographie
 
 <img src="https://media.licdn.com/dms/image/v2/D4E03AQECsDfKLjHphg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1712225837200?e=1782950400&v=beta&t=YW_dbRFkgpeTGhZYMHMlKhkclFSSRMd6_NBYvgomqd0" alt="Jérémy Viau-Trudel" width="200" />
