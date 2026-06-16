@@ -1,101 +1,114 @@
 # Verbatim par diapo
 
-> **Livrable 4/4 de la tâche 1 du ticket [TKT-001-plan](../tickets/TKT-001-plan/ticket.md).** Contenu détaillé, sous forme de **verbatim oral**, pour chacune des dix diapos du [plan](03-plan-10-diapos.md). Le texte est rédigé pour être **dit**, pas lu : phrases courtes, ton calme et un brin malicieux (cf. motif du récit, livrable 2). Les indications de scène sont en italique. Les faits sont alignés sur les fondations sourcées ; à revalider à l'approche de l'événement.
+> **Livrable 4/4, révisé à la tâche 2 du ticket [TKT-001-plan](../tickets/TKT-001-plan/ticket.md).** Aligné sur le [plan](03-plan-10-diapos.md) et le [récit](02-argumentaire-recit.md) révisés : Linux au premier plan, quantique déclencheur, diapo 3 sur la gestion du risque, diapo 4 en mode « show » (international et CCCS), coeur Linux aux diapos 5 à 8, démo en placeholder, conclusion hors décompte. Texte rédigé pour être **dit** ; indications de scène en italique ; faits alignés sur les fondations sourcées, à revalider avant l'événement.
 
 ## Diapo 1 : l'accroche
 
 *(À l'écran : un plan d'apparence très savante. Ton assuré, presque solennel.)*
 
-« Bonjour à tous. Merci d'être là. Aujourd'hui, on va parler de calcul quantique. Voici le plan. D'abord, je vais vous démontrer le théorème de Shor au tableau. Ensuite, on va l'implémenter ensemble en Qiskit. Et pour finir, on va lancer une exécution, gratuitement, sur l'ordinateur quantique d'IBM installé à Bromont, juste à côté. »
+« Bonjour à tous, merci d'être là. Aujourd'hui, on parle de calcul quantique. Voici le plan. D'abord, je vous démontre le théorème de Shor au tableau. Ensuite, on l'implémente ensemble en Qiskit. Et pour finir, on lance une exécution, gratuitement, sur l'ordinateur quantique d'IBM installé à Bromont, juste à côté. »
 
-*(Pause. On laisse le malaise monter deux secondes.)*
+*(Pause. On laisse le malaise monter.)*
 
 « ... Non. Je blague. »
 
-*(Les lignes du faux plan se barrent une à une à l'écran.)*
+*(Les lignes du faux plan se barrent une à une.)*
 
-« Rien de tout ça. En fait, je vais vous confier un secret pour une salle remplie de gens de Linux : dans toute cette présentation, on va utiliser le mot quantique souvent, mais **il n'y a rien de quantique là-dedans**. Pas de qubit, pas de superposition, pas de physique. Ce dont on parle aujourd'hui, c'est de cybersécurité. Du travail d'ingénierie, normal, que vous connaissez déjà. »
+« Rien de tout ça. Un secret, pour une salle de gens de Linux : dans toute cette présentation, on va dire le mot quantique souvent, mais **il n'y a rien de quantique là-dedans**. Pas de qubit, pas de physique. Ce dont on parle, c'est de cybersécurité, et de Linux. Du travail d'ingénierie que vous connaissez déjà. »
 
 ## Diapo 2 : le vrai plan
 
-*(À l'écran : un plan volontairement sobre, presque ennuyeux.)*
+*(À l'écran : un plan sobre, presque ennuyeux.)*
 
-« Voici le vrai plan. Et je l'ai fait exprès le plus ordinaire possible, parce que c'est ça mon message principal. On va voir : les menaces, les risques, les composants impactés, la stratégie de mitigation, où en sont quelques distributions Linux, et on finira par une démo d'inventaire cryptographique. »
+« Voici le vrai plan. Je l'ai fait exprès le plus ordinaire possible, parce que c'est ça, mon message. On va repenser une menace, voir que tout le monde a déjà commencé à s'en occuper, puis passer le gros de notre temps dans le concret : où vit la cryptographie dans Linux, comment les améliorations y arrivent, et comment vous pouvez vérifier l'état des choses vous-mêmes. »
 
-« C'est un plan de présentation de cybersécurité comme il en existe mille. Et c'est exactement ce que je veux vous montrer : la cryptographie post-quantique, le PQC, ce n'est pas une révolution affolante. C'est la suite normale d'un métier qui, depuis trente ans, remplace ses algorithmes quand il le faut. Gardez cette idée en tête : **on gère**. »
+« Gardez une idée en tête : le quantique, ici, ce n'est qu'une porte d'entrée. Le vrai sujet, c'est la gestion de la cryptographie dans l'infrastructure Linux qui fait tourner le monde. »
 
-## Diapo 3 : la menace, sans drame
+## Diapo 3 : repenser la menace comme un risque
 
-« Alors, la menace. Oui, il y a une course pour casser les algorithmes de cryptographie standards. Mais ce n'est pas la première fois. Souvenez-vous : MD5, cassé. SHA-1, cassé. DES, abandonné pour AES. RC4, déprécié dans TLS. À chaque fois, qu'est-ce qu'on a fait ? On a remplacé l'algorithme par un plus solide. C'est la routine. »
+« Alors, de quoi parle-t-on, si ce n'est pas de quantique ? On parle de **risque**. Posez-vous la question, froidement : si la cryptographie à clé publique, celle qui protège à peu près tout, devenait cassable, on fait quoi ? »
 
-« Le quantique, concrètement, menace quoi ? L'algorithme de Shor **casse** la cryptographie asymétrique : RSA, les courbes elliptiques. C'est le coeur du problème. L'algorithme de Grover, lui, ne fait qu'**affaiblir** le symétrique, AES et les fonctions de hachage ; et la parade est triviale, on double la taille des clés. Donc AES-256 reste solide. »
+« Ce qui rend ce sujet inconfortable, c'est qu'il touche au **socle** de notre cybersécurité. Et face à ça, je vois deux erreurs symétriques. La première : **négliger**, parce qu'on n'y croit pas, parce que ça fait peur, ou parce que ce n'est jamais la priorité. La deuxième : se laisser **submerger par le battage médiatique**, au point de ne plus voir l'enjeu réel. Les deux mènent au même endroit : l'inaction. »
 
-« Et soyons honnêtes : pendant qu'on améliore le quantique, on améliore aussi le classique. L'an dernier, des chercheurs ont reproduit avec de simples réseaux tensoriels un calcul qu'on disait hors de portée des ordinateurs classiques. Les deux mondes se tirent vers le haut. Message : **pas besoin de paniquer.** »
+« Or le risque quantique n'est qu'un **déclencheur**. Le vrai enjeu, c'est de **gérer notre cryptographie** et de **vérifier notre chaîne d'approvisionnement logiciel**. Et il y a une urgence concrète, le Harvest Now Decrypt Later : on capte vos données chiffrées aujourd'hui pour les déchiffrer plus tard. Donc l'exposition est **déjà** là. La vraie question pour vos équipes, ce n'est pas la physique. C'est : qu'arriverait-il si on n'agissait pas maintenant ? »
 
-## Diapo 4 : pourquoi c'est quand même sérieux
+## Diapo 4 : c'est déjà pris en charge, et vous ?
 
-« Maintenant, je ne veux pas que vous partiez en pensant que c'est rien. Parce que c'est sérieux, mais pour une raison contre-intuitive. »
+*(Ton qui s'ouvre, presque rassurant. Interaction avec la salle.)*
 
-« Quand arrive l'ordinateur quantique capable de casser RSA, le fameux Q-Day ? Personne ne le sait. Les experts donnent autour de 28 à 49 pour cent de chances dans les dix ans. C'est incertain. Mais le pire scénario serait catastrophique à l'échelle de l'économie mondiale. Et surtout, il y a le piège : le **Harvest Now, Decrypt Later**. Un adversaire capte **aujourd'hui** vos données chiffrées, les stocke, et les déchiffrera quand il aura la machine. »
+« Posons-la, la question, pour de vrai. Qu'est-ce qui arriverait si personne n'agissait ? »
 
-« Donc la vraie question n'est pas quand arrive le Q-Day. C'est : combien de temps vos données doivent-elles rester secrètes ? Il y a une petite inégalité pour ça, l'inégalité de Mosca : si la durée de vie de vos données plus le temps qu'il vous faut pour migrer dépasse le temps avant le Q-Day, vous êtes **déjà** en retard. Petit détail savoureux : Mosca est canadien, on y revient. »
+*(Laisser deux ou trois réponses.)*
 
-## Diapo 5 : des enjeux déjà bien pris en charge
+« Bonne nouvelle : on n'en est pas là, parce que le monde a déjà commencé. La communauté internationale de cybersécurité a agi. Le NIST a publié ses standards post-quantiques en 2024 : ML-KEM pour l'échange de clés, ML-DSA et SLH-DSA pour les signatures. Les Européens suivent : le BSI allemand, l'ANSSI française, l'ETSI. Le G7 a même publié une déclaration commune sur la migration. »
 
-« Bonne nouvelle : le monde s'est organisé, et ça avance bien. »
+« Et le Canada n'est pas en reste, pas comme labo de recherche aujourd'hui, mais comme **régulateur**. Le Centre canadien pour la cybersécurité a publié une **feuille de route de migration**, entrée en vigueur en juin 2025, avec des **obligations contraignantes** : les systèmes du gouvernement doivent migrer toute leur cryptographie à clé publique. Il y a même un guide pour les organisations. »
 
-« Côté normalisation, le NIST a publié en 2024 les premiers standards post-quantiques : ML-KEM pour l'échange de clés, ML-DSA et SLH-DSA pour les signatures. Ce ne sont plus des projets de recherche, ce sont des standards. Et les Européens suivent : le BSI allemand, l'ANSSI française, l'ETSI. »
+*(Temps. Regard aux décideurs.)*
 
-« Côté vocabulaire, le milieu a ses repères : le Q-Day dont on a parlé, et surtout la **crypto-agilité** : la capacité à changer d'algorithme rapidement, sans tout reconstruire. C'est ça, le vrai objectif. Pas installer du PQC une fois, mais devenir capable d'en changer quand il le faudra. Bref : ce n'est pas le far west, c'est un chantier cadré, avec des règles et un calendrier. »
+« Donc la question n'est plus de savoir si c'est sérieux. C'est : est-ce que ce risque est couvert par **vos** processus de cybersécurité ? Est-il dans **vos** veilles stratégiques, dans **vos** axes d'analyse ? »
 
-## Diapo 6 : le leadership canadien
+## Diapo 5 : Linux, infrastructure stratégique
 
-« Je vous avais promis qu'on reviendrait au Canada. Parce qu'on a de quoi être fiers. »
+« Maintenant, le coeur. Et on commence par une mise au point pour les décideurs. »
 
-« Le quantique au Canada, c'est un pôle mondial. Et au Québec, il y a un triangle : Québec, Sherbrooke, Montréal. À Sherbrooke, l'Institut quantique de l'Université de Sherbrooke et la zone d'innovation Distriq ; un ordinateur quantique IBM installé à Bromont. Au fédéral, une Stratégie quantique nationale, dont la feuille de route parle explicitement de communication quantique et de cryptographie post-quantique. »
+« On entend souvent les amateurs de Linux se plaindre que personne ne l'utilise. C'est vrai sur un seul terrain : le poste de travail, autour de 5 pour cent. Partout ailleurs, Linux **domine** : environ 60 pour cent du web, 90 pour cent du cloud public, 71 pour cent du mobile via Android, la totalité des supercalculateurs. Linux n'est pas un noyau de bricoleur. C'est une **infrastructure stratégique, fondamentale et irremplaçable**. Et une infrastructure, ça s'entretient. Donc ça se finance. »
 
-« Et vous vous souvenez de l'inégalité de Mosca, à la diapo d'avant ? Michele Mosca, c'est l'Institut for Quantum Computing de Waterloo, en Ontario. Le cadre qu'on utilise partout dans le monde pour mesurer le risque quantique vient d'ici. Quand on parle de PQC, le Canada n'est pas spectateur, il est sur la ligne de front. »
+*(Afficher les deux tableaux.)*
 
-## Diapo 7 : Linux, où vit la crypto
+« Et l'important, c'est que la cryptographie ne joue pas le même rôle selon l'usage. Voici nos six catégories. À gauche, leur importance stratégique. À droite, l'usage de la crypto et les défis propres à chacune. Un serveur d'entreprise, une image de conteneur, un routeur IoT, un téléphone : ce ne sont pas les mêmes contraintes. Pour s'y retrouver, il faut comprendre ça d'abord. »
 
-« Bon, on est entre gens de Linux, rentrons dans la machine. Où est la cryptographie dans une distribution, concrètement ? »
+## Diapo 6 : le flux upstream vers downstream
 
-« Elle est partout, mais elle passe par quelques composants clés. **OpenSSL** et **GnuTLS** pour le TLS, c'est-à-dire le HTTPS et la plupart des communications chiffrées. **OpenSSH** pour vos connexions à distance. Et le **noyau** lui-même, pour certaines opérations. Ajoutez la signature des paquets, qui garantit que ce que vous installez vient bien de votre distribution. »
+« La bonne nouvelle, c'est que derrière la diversité des centaines de distributions, il n'y a qu'une **poignée de briques logicielles**. Les voici. Si vous savez ce qui tourne dans ces quelques composants, vous savez presque tout. »
 
-« Ça veut dire que la posture post-quantique d'une distribution ne se décide pas dans le vide : elle dépend surtout de la version de ces composants qu'elle embarque. Si vous savez quelle version d'OpenSSL et d'OpenSSH tourne sur une image, vous savez déjà presque tout de sa maturité PQC. C'est cette grille qu'on a utilisée pour analyser les distributions. »
+« Et les améliorations arrivent par un **flux** prévisible, de l'amont vers l'aval. Deux choses décident de la vitesse : la **feuille de route** de l'éditeur, son choix stratégique, et le **modèle de publication**, rolling ou stable. Regardez ce deuxième tableau : RHEL avance vite parce que son éditeur est proactif, Arch parce qu'il est rolling, Debian plus lentement parce qu'il est prudent. »
 
-## Diapo 8 : la roadmap PQC des distributions
+*(Aux décideurs.)*
 
-« Et justement, qu'est-ce que ça donne sur le terrain ? »
+« Et un message pour les gestionnaires : ce n'est pas hors de portée de vos équipes. En gros, **une journée de formation** Linux-PQC permet à une équipe opérationnelle de prendre en charge l'essentiel du risque, et surtout de savoir le **remonter** à l'équipe cyber. »
 
-« Le déclencheur, c'est l'amont. En 2025, deux sorties ont tout changé : OpenSSL 3.5, qui active l'échange de clés post-quantique par défaut, et OpenSSH 10, pareil. À partir de là, le PQC **descend** vers les distributions, à la vitesse de leur modèle de publication. »
+*(À la communauté.)*
 
-« Qui mène ? Red Hat, nettement. RHEL active le PQC par défaut dans ses politiques, et surtout, c'est la première grande distribution à **signer ses paquets** avec une signature post-quantique. Derrière, les distributions en rolling, comme Arch ou openSUSE Tumbleweed, l'ont très tôt par fraîcheur. Ubuntu et Debian, eux, l'intègrent au rythme de leurs versions stables. Et tout un monde de dérivés hérite simplement de son amont. La carte est claire, et on l'a documentée image par image. »
+« Pour vous : connaissez-vous la feuille de route PQC de vos distributions ? Et est-ce que le couple feuille de route plus modèle de publication colle à vos besoins de protection des données ? »
 
-## Diapo 9 : démo, inventaire et CBOM
+## Diapo 7 : les briques de la crypto Linux, en détail
 
-*(Bascule vers la démonstration en direct ou enregistrée.)*
+« Entrons dans la technique, c'est la partie la plus importante pour vous. Voici les briques, et depuis quelle version chacune fait du post-quantique. »
 
-« Maintenant, le concret. Parce qu'il y a une règle simple en migration : on ne migre pas ce qu'on ne connaît pas. La toute première étape, ce n'est pas d'installer du PQC, c'est de savoir **où** vous avez de la cryptographie. »
+« Les deux moteurs, ce sont **OpenSSL** et **OpenSSH**. OpenSSL 3.5, sorti en avril 2025, apporte ML-KEM, ML-DSA et SLH-DSA nativement, et active l'échange de clés hybride par défaut en TLS. OpenSSH fait du post-quantique par défaut depuis la version 10. À côté, GnuTLS, NSS et le runtime Go ont le même échange hybride ; Go l'active par défaut depuis la 1.24, ce qui couvre tous les outils cloud-native écrits en Go. Pour l'embarqué, wolfSSL est déjà prêt et validé ; mbedTLS, pas encore. Et le noyau Linux a ses propres chantiers en cours. »
 
-« Pour ça, il y a le CBOM, le Cryptography Bill of Materials : l'inventaire de toute la crypto d'un système. Je vais le faire devant vous sur deux images contrastées. Une image RHEL récente : vous allez voir un inventaire riche, avec du post-quantique déjà activé. Et une image Alpine minimale : un inventaire tout petit, centré sur OpenSSL et quelques certificats. »
+« Retenez la logique : la posture d'une distribution, c'est d'abord la **version de ces briques** qu'elle embarque. »
 
-*(Lancer le scan, commenter le résultat.)*
+## Diapo 8 : carte de maturité PQC par catégorie
 
-« Voilà à quoi ça ressemble. Et c'est ça, le point de départ de la crypto-agilité : un inventaire à jour, qu'on peut rescanner après chaque migration pour vérifier qu'on a vraiment bougé. »
+« Si on prend de la hauteur, voici la carte de qui en est où. »
 
-## Diapo 10 : conclusion et appel
+« Le meneur, c'est Red Hat. RHEL active le post-quantique par défaut et, fait unique, **signe ses paquets** avec une signature post-quantique. Les distributions en rolling, Fedora, Tumbleweed, Arch, suivent très tôt par fraîcheur. Ubuntu et Debian arrivent au rythme de leurs versions stables. Le conteneur est plutôt mûr, surtout les images fraîches et signées comme Wolfi. Le mobile avance sur le web mais traîne côté plateforme. Et l'IoT contraint, c'est le plus en retard. Vous avez la carte, et le pourquoi de chaque case. »
 
-« On résume. La menace quantique sur la cryptographie est réelle, mais c'est un problème d'ingénierie de cybersécurité, pas une apocalypse. Il faut agir maintenant, à cause du Harvest Now Decrypt Later et de la durée de vie de vos données. Et tout est en place pour le faire : des standards, des outils, une carte des distributions, et un vrai leadership canadien. »
+## Diapo 9 : démo, vérifier le PQC soi-même
 
-« Trois mots à retenir : démystifier, responsabiliser, rassurer. La menace n'est pas magique, l'urgence est réelle mais mesurable, et la solution est connue. La vraie capacité à bâtir, ce n'est pas de migrer une fois, c'est de rester crypto-agile. »
+*(Bascule vers la démonstration, préparée séparément.)*
 
-*(Temps. Regard à la salle.)*
+« Et maintenant, le plus utile. Parce que je ne veux pas que vous repartiez avec juste une carte ; je veux que vous repartiez avec une **compétence**. »
 
-« Chez nous, c'est exactement ce qu'on fait. Si la migration post-quantique vous concerne, et elle vous concerne, on est les gens du PQC au Québec. Venez nous parler. Merci. »
+« La première étape de toute migration, ce n'est pas d'installer du post-quantique. C'est de savoir **où** vous avez de la cryptographie. On appelle ça un CBOM, un inventaire cryptographique. Je vais le faire devant vous, et vous allez voir : c'est à votre portée. »
+
+*(Lancer la démo préparée. Commenter le résultat sur une ou deux images contrastées.)*
+
+« Voilà. Vous saurez refaire ça en rentrant chez vous. Et c'est exactement ça, le point de départ de la crypto-agilité : un inventaire à jour, qu'on rescanne après chaque changement. »
+
+## Diapo x : conclusion et appel
+
+« On résume en trois mots. **Recadrer** : le quantique n'est qu'un déclencheur, le vrai sujet est la gestion de la cryptographie dans Linux. **Responsabiliser** : ni déni, ni panique ; l'enjeu est cadré, le monde et le Canada ont agi, à vous de jouer. **Outiller** : vous repartez avec une compétence concrète, l'inventaire cryptographique. »
+
+*(Temps. Regard à la salle, puis aux décideurs.)*
+
+« Pour les organisations dans la salle : ce qu'on vient de montrer est **directement applicable** chez vous pour améliorer votre prise en charge du PQC. C'est notre métier. Nous sommes les gens du PQC au Québec. Venez nous parler. Merci. »
 
 ## Notes de performance
 
-- Durée cible : environ 15 à 20 minutes ; la démo (diapo 9) est le segment élastique.
-- Les deux temps de bascule à répéter : la chute de la diapo 1 (timing du « Non. Je blague. ») et le lancement du scan en diapo 9 (prévoir un enregistrement de secours).
-- Chiffres et faits à revalider la semaine précédant l'événement (versions de distributions, statistiques de Q-Day, jalons canadiens) ; sources dans les fondations citées.
+- Durée cible : environ 18 à 22 minutes ; le coeur (diapos 5 à 8) et la démo (diapo 9) sont les segments élastiques.
+- Deux interactions à préparer : « qu'arriverait-il si on n'agissait pas ? » (diapo 4) et le lancement de la démo (diapo 9, prévoir un enregistrement de secours).
+- Trois bascules de ton : la chute de la diapo 1, l'ouverture rassurante de la diapo 4, et le passage à la compétence transmise en diapo 9.
+- Faits à revalider la semaine précédant l'événement : versions de distributions, jalons du CCCS (ITSM.40.001, ITSAP.00.017), standards NIST ; sources dans les fondations citées.

@@ -1,57 +1,54 @@
 # Argumentaire et récit (le fil que la présentation doit supporter)
 
-> **Livrable 2/4 de la tâche 1 du ticket [TKT-001-plan](../tickets/TKT-001-plan/ticket.md).** On fixe ici le **récit** et le **what matters** (end in mind), avant de découper en diapos (livrable 3) et de rédiger le verbatim (livrable 4). S'appuie sur les fondations sourcées du dépôt.
+> **Livrable 2/4, révisé à la tâche 2 du ticket [TKT-001-plan](../tickets/TKT-001-plan/ticket.md).** Cette version intègre les directives de la tâche 2 : **Linux et la cybersécurité appliquée passent au premier plan**, le quantique n'est qu'un **déclencheur** ; on privilégie le **méthodologique et le pratique** sur le théorique et le philosophique ; on abandonne le volet « leadership de la recherche quantique » ; le **coeur** de la présentation devient Linux ; la présentation se termine par une **démo qui laisse une compétence réutilisable**. S'appuie sur [FND-008](../fondations/FND-008-usages-de-linux.md), [FND-009](../fondations/FND-009-pqc-par-categorie-dimages.md), [FND-010](../fondations/FND-010-risque-quantique-notion-et-prise-en-charge.md), [FND-011](../fondations/FND-011-pqc-soixante-images-par-categorie.md), [FND-006](../fondations/FND-006-outils-cbom-scan-panorama-comparaison.md) et [TKT-010](../tickets/TKT-010-redaction-des-slides+verbatim/ticket.md).
 
 ## 1. La thèse (une phrase)
 
-**Le « PQC », ce n'est pas du quantique : c'est de l'ingénierie de cybersécurité bien comprise, déjà en cours, et nous la maîtrisons.**
+**Le « risque quantique » n'est qu'un déclencheur : le vrai sujet, c'est la gestion de la cryptographie dans l'infrastructure Linux qui fait tourner le monde, et c'est un travail d'ingénierie que l'on sait faire.**
 
-Tout le récit sert cette thèse. Si une diapo ne la renforce pas, elle sort.
+Tout le récit sert cette thèse. Le quantique ouvre la porte ; Linux et la pratique de cybersécurité occupent la pièce.
 
 ## 2. Le what matters (ce que l'audience doit retenir)
 
-Trois idées, dans cet ordre de priorité.
+Trois idées, dans cet ordre.
 
-1. **Démystifier** : la menace quantique sur la cryptographie est réelle mais **gérable** ; remplacer un algorithme cassé est le **quotidien** de la cybersécurité, pas une apocalypse.
-2. **Responsabiliser** : il faut agir **maintenant** à cause du « Harvest Now, Decrypt Later », parce que la **durée de vie des données** crée une exposition présente même si l'ordinateur quantique est futur.
-3. **Rassurer et crédibiliser** : les outils existent (standards, crypto-agilité), le **Canada est un leader** du domaine, et nous (noumanity) savons exactement quoi faire.
+1. **Recadrer** : le quantique n'est pas le sujet ; le sujet est la **gestion du risque cryptographique** et la **chaîne d'approvisionnement logiciel**. Le premier pas concret est de **vérifier** ce qu'on a.
+2. **Responsabiliser sans dramatiser** : il y a un **double risque**, négliger l'enjeu (par scepticisme ou par peur) **ou** se laisser paralyser par le battage médiatique ; les deux empêchent d'agir. Or l'enjeu **est déjà pris en charge** par la communauté internationale et par les autorités canadiennes : la seule question est « et vous, en êtes-vous ? ».
+3. **Outiller** : Linux est une **infrastructure stratégique** ; sa posture PQC se ramène à un **petit nombre de briques** et à un **flux upstream vers downstream** lisible ; et on peut **vérifier soi-même** son état (CBOM). On repart avec une compétence.
 
-Effet visé sur l'audience prioritaire : « ces gens-là maîtrisent le sujet de bout en bout, calmement ; ce sont les bonnes personnes à appeler ».
+Effet visé sur l'audience prioritaire (décideurs) : « le PQC est un axe de gestion du risque que mes équipes peuvent prendre en charge concrètement, et ces gens savent l'outiller ».
 
-## 3. Le récit en sept actes
+## 3. Le récit en cinq actes
 
-### Acte 1 : le renversement (accroche)
+### Acte 1 : le renversement (diapos 1 et 2)
 
-On ouvre comme une conférence quantique intimidante : faux plan affichant « démonstration du théorème de Shor », « implémentation Qiskit », « exécution sur l'ordinateur quantique d'IBM à Bromont ». Puis la chute : **non, c'est une blague ; on utilise le mot quantique, mais il n'y a rien de quantique dans ce sujet.** On barre le faux plan et on révèle un vrai plan, volontairement **ordinaire** pour une présentation de cybersécurité : menaces, risques, composants impactés, mitigation, roadmap PQC des distros, CBOM. Fonction : désamorcer l'intimidation, créer la complicité, planter la thèse dès la première minute.
+On ouvre comme une conférence quantique intimidante (théorème de Shor, Qiskit, ordinateur quantique d'IBM à Bromont), puis chute : **rien de quantique ici**. On révèle un vrai plan, volontairement ordinaire pour une présentation de cybersécurité. Fonction : désamorcer l'intimidation, créer la complicité, planter la thèse (le mot quantique est un appât ; le sujet est Linux et la cybersécurité).
 
-### Acte 2 : la menace, sans drame
+### Acte 2 : repenser la menace comme un risque (diapo 3)
 
-Il y a une course pour casser les algorithmes cryptographiques standards. **Ce n'est pas la première fois.** MD5 et SHA-1 sont tombés (collisions), DES a été abandonné pour AES, RC4 a été déprécié dans TLS. À chaque fois, on a **remplacé** l'algorithme par un plus robuste : c'est le **métier**. La menace quantique précise : l'algorithme de Shor **casse** la cryptographie asymétrique (RSA, courbes elliptiques) ; l'algorithme de Grover **affaiblit seulement** le symétrique (AES, hachage), parade simple en doublant les tailles de clés (cf. [FND-010](../fondations/FND-010-risque-quantique-notion-et-prise-en-charge.md), [FND-001](../fondations/FND-001-recherche-preliminaire-pqc-distributions-linux.md)). Nuance honnête : le **classique progresse aussi** (des méthodes classiques, réseaux tensoriels et propagation de croyance, ont récemment rivalisé avec une revendication de suprématie quantique). Message : **on gère, pas besoin de paniquer.**
+On garde l'intention de **dédramatiser**, mais on change d'angle : **on abandonne l'illustration historique** au profit d'un raisonnement de **gestion du risque**. De quoi parle-t-on, alors ? De ceci : si la cryptographie à clé publique tombe, on fait quoi ? Le risque quantique crée un **malaise profond** parce qu'il remet en cause le **socle** de notre cybersécurité. D'où un **double risque** : le **négliger** (on n'y croit pas, ça fait peur, ce n'est pas prioritaire) ou se laisser **submerger par le battage** (qui empêche de voir les enjeux réels). Le risque quantique est un **déclencheur** ; l'enjeu réel est la **gestion de la cryptographie**, et le danger immédiat est l'**inaction**, parce que le « Harvest Now, Decrypt Later » rend l'exposition **présente**. Question qui amorce la suite : qu'arriverait-il si on n'agissait pas maintenant ? Message décideurs : prendre en charge le PQC est un **impératif urgent de gestion du risque**, et il impose de **vérifier sa chaîne d'approvisionnement logiciel**. (Cf. FND-010 et la section « penser la menace quantique » de TKT-010.)
 
-### Acte 3 : pourquoi c'est quand même sérieux
+### Acte 3 : c'est déjà pris en charge, et vous ? (diapo 4)
 
-Le moment du « Q-Day » est **incertain** (estimations d'experts : 28 à 49 pour cent de probabilité d'un ordinateur quantique pertinent d'ici dix ans, cf. FND-010). Mais le **pire cas** serait catastrophique pour l'économie mondiale, et surtout il y a le **HNDL** : un adversaire **capte aujourd'hui** des données chiffrées pour les déchiffrer plus tard. Donc la **durée de vie de confidentialité des données** rend le risque **présent**. L'outil de décision est l'**inégalité de Mosca** : si la durée de vie des données plus le temps de migration dépasse le temps avant le Q-Day, on est déjà en retard. Clin d'oeil : Michele Mosca est **canadien** (Institut for Quantum Computing, Waterloo). Cadrage assumé : on se limite aux outils de cryptographie ; la classification des données relève d'une approche cyber plus large.
+On passe du **« tell »** (croyez-moi, c'est sérieux) au **« show »** (regardez qui a déjà agi). La **communauté internationale** de cybersécurité a agi : standards PQC du NIST (ML-KEM, ML-DSA, SLH-DSA), équivalents européens (BSI, ANSSI, ETSI), déclaration du G7. Les **autorités canadiennes** ont agi : le Centre canadien pour la cybersécurité a publié une **feuille de route de migration** (ITSM.40.001) avec des **obligations contraignantes** pour les systèmes du gouvernement, et un guide pour les organisations (ITSAP.00.017). Interaction avec la salle : « qu'arriverait-il si on n'agissait pas ? ». Message décideurs : c'est un enjeu sérieux et cadré ; **est-il couvert par vos processus de cybersécurité, vos veilles stratégiques** ?
 
-### Acte 4 : des enjeux déjà bien pris en charge
+### Acte 4 : le coeur, Linux comme infrastructure stratégique (diapos 5 à 8)
 
-Deux preuves que le monde s'organise. **Normalisation** : le NIST a publié en 2024 les premiers standards PQC (FIPS 203 ML-KEM, FIPS 204 ML-DSA, FIPS 205 SLH-DSA) ; les équivalents européens (BSI, ANSSI, ETSI) suivent. **Vocabulaire du milieu** : Q-Day, crypto-agilité (la capacité à changer d'algorithme vite), inventaire cryptographique. Message : ce n'est pas un far west ; c'est un chantier cadré.
+C'est le centre de gravité de la présentation. Quatre temps.
 
-### Acte 5 : la fierté canadienne (et québécoise)
+- **Linux est une infrastructure stratégique** (diapo 5) : marginal sur le bureau, mais dominant ou hégémonique partout ailleurs (serveur, cloud, conteneur, mobile, embarqué, supercalcul). Pour un décideur, Linux n'est pas « un noyau », c'est un **socle irremplaçable** qu'il faut **entretenir**, donc dans lequel il faut **investir**. L'importance, le rôle et l'implémentation de la cryptographie **dépendent de la catégorie d'usage** (cf. FND-008).
+- **Un flux lisible** (diapo 6) : malgré la diversité des distributions, il n'y a qu'un **petit nombre de briques logicielles**. Et la mise en production des améliorations suit un **flux upstream vers downstream** déterminé par deux facteurs : la **feuille de route** de l'éditeur et le **modèle de publication**. Message décideurs : une **formation d'une journée** suffit à une équipe Linux pour prendre en charge l'essentiel du risque opérationnel et savoir le **remonter** à l'équipe cyber.
+- **Les briques en détail** (diapo 7) : le contenu le plus technique, pour l'audience Linux : quelle version de chaque brique introduit le PQC, ce qu'elle livre, et la suite de sa feuille de route.
+- **La carte de maturité** (diapo 8) : une lecture synthétique, par catégorie, de qui mène, qui suit et qui est à la traîne, et pourquoi (cf. FND-009 et FND-011).
 
-Le Canada est un **leader** du quantique. Le triangle **Québec - Sherbrooke - Montréal** : l'Institut quantique de l'Université de Sherbrooke et la zone d'innovation **Distriq**, un ordinateur quantique **IBM à Bromont**, et une **Stratégie quantique nationale** dont la feuille de route inclut explicitement la communication quantique et la **cryptographie post-quantique**. Et le cadre de risque qu'on vient d'utiliser (Mosca) vient d'ici. Fonction : fierté locale pour la communauté, signal de sérieux pour les décideurs.
+### Acte 5 : la démo et l'appel (diapo 9 et conclusion)
 
-### Acte 6 : Linux, le concret
-
-Où vit la cryptographie dans une distribution, et à quoi elle sert. Les **composants** : OpenSSL, GnuTLS, OpenSSH, le noyau. La leçon des fondations : le PQC **descend de l'amont** (OpenSSL 3.5 et OpenSSH 10, sortis en 2025) vers les distributions, à une vitesse fixée par leur modèle de publication. **RHEL mène** (il signe déjà ses paquets avec une signature post-quantique hybride) ; les rolling suivent tôt ; Ubuntu et Debian au rythme de leurs stables (cf. [FND-009](../fondations/FND-009-pqc-par-categorie-dimages.md), [FND-011](../fondations/FND-011-pqc-soixante-images-par-categorie.md)). Fonction : contenu technique crédible qui capte la communauté Linux.
-
-### Acte 7 : passer à l'acte, et l'appel
-
-On ne migre pas ce qu'on ne connaît pas : la première étape concrète est l'**inventaire cryptographique** (CBOM), démontrable avec des scanners (cf. [FND-006](../fondations/FND-006-outils-cbom-scan-panorama-comparaison.md)). La vraie capacité à bâtir n'est pas « installer du PQC » une fois, c'est la **crypto-agilité**. Chute et appel : le PQC est une **migration d'ingénierie maîtrisable** ; nous sommes les experts PQC au Québec ; parlons-nous.
+La présentation se termine par une **démonstration**, préparée à part. Récit : « nous allons vous montrer comment **vérifier** le PQC, et vous serez capables de le faire **vous-mêmes** en rentrant ». On donne une **compétence réutilisable** (un inventaire cryptographique, le CBOM). Message décideurs : nous livrons de la **valeur directement applicable** dans votre entreprise pour améliorer votre prise en charge du PQC. Appel : parlons-nous.
 
 ## 4. Le motif récurrent
 
-Un fil rouge tient les sept actes : **démystifier, responsabiliser, rassurer**. On enlève la peur (acte 1 et 2), on installe l'urgence juste (acte 3), puis on montre que tout est sous contrôle et que la compétence existe ici (actes 4 à 7). Le ton constant : **calme, compétent, un brin malicieux**. C'est ce ton, plus que n'importe quel fait isolé, qui produit la perception « référence PQC ».
+Un fil tient les cinq actes : **recadrer, responsabiliser, outiller**. On déplace l'attention du quantique vers la cybersécurité Linux appliquée (recadrer), on installe l'urgence juste en évitant les deux pièges du déni et du battage (responsabiliser), puis on met une compétence concrète entre les mains de l'audience (outiller). Ton constant : **calme, concret, compétent, un brin malicieux**.
 
 ## 5. Ce que le récit écarte volontairement
 
-Pour tenir dix diapos et garder le fil, on **n'expose pas** : la démonstration du théorème de Shor, le détail mathématique des réseaux euclidiens, un panorama des soixante images (il reste dans FND-011), la classification des données, la cryptographie quantique (QKD) qui n'est pas le sujet. Ces éléments restent disponibles pour le matériel de suivi.
+Pour garder Linux au premier plan et tenir le format, on **n'expose pas** : la démonstration du théorème de Shor, le détail mathématique des algorithmes, le **panorama de la recherche quantique canadienne** (abandonné comme axe ; seules les **actions réglementaires** canadiennes restent, en diapo 4), la classification des données, et la cryptographie quantique (QKD). Ces éléments restent en réserve dans les fondations pour le matériel de suivi.

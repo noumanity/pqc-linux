@@ -148,4 +148,180 @@ Je dois rapidement recentrer le travail. Voici ce que nous allons faire =>
 4. Pour chaque diapo, produire le contenu détaillé sous forme de verbatim.
 
 Mettre ces 4 livrables dans le répertoire `@.dev/artefacts`. 
+
+### 2. Préciser le plan à haut niveau
+
+#### Voici ce qui ne fonctionne pas
+
+##### [directive transversale] Linux et l'application de la cybersécurité doivent être au premier plan, pas le quantique
+
+- équilibre entre PQC vs linux
+- équilibre théorique / philosiphique vs méthodologique vs pratique
+
+##### [transversal] Le récit
+
+- les actes 1,2 et 3 sont fortement liés
+- le contenu de acte 2 est revue en profondeur. voir section "diapo 3" plus bas
+- acte 4: recadrage du message => regardez, l'enjeu est pris en charge, voici comment. Message pour décideurs-cyber => Et vous? Êtes-vous parmis ceux qui prenne en charge PQC ou non?
+- on laisse tombé le contenu de l'acte 5. Ce n'est pas un sujet à mettre de l'avant ici.
+- acte 6 devrait être le coeur de la présentation. Développer
+- acte 7: la présentation de termine par une démo. le récit: "nous allons vous montrer comment vérifier le PQC. Vous serez capable de la faire vous même".  On donne une vrai compétence utilisable par les participants à leur retour à la maison. Message pour les décideurs => nous livrons de la valeur directement applicable dans votre entreprise pour améliorer votre prise en charge PQC.
+
+
+##### diapo 1: on conserve
+
+
+##### diapo 2: on conserve
+
+##### diapo 3: on change l'angle d'approche
+
+On conserve l'idée de dédramatiser. Mais change d'angle. On laisse tombé l'illustration historique. On l'applique concrètement en développant la notion de "risque quantique". 
+
+message pour audience décideurs-cybersécurité: prendre en charge le PQC est un impératif urgent de gestion de risque + le PQC impose de vérifier notre chaine d'approvisionnement logiciel -> premier pas vérifier
+
+On change la perspective:
+- le risque quantique est un déclencheur,
+- l'enjeu réel c'est la gestion du la cryptographique
+- il y a un danger important => ne pas agir -> enchainement possible sur HNDL / qu'est-ce qui arriverait si on agissait pas maintenant ?
+
+Voir TKT-010 section "penser la menace quantique"
+
+##### diapo 4: le message -> agir maintenant maintenant
+
+On passe de "tell" -> c'est sérieux,  à "show" -> communauté cyber internationnal + autorités canadiennes prennent cet enjeu au sérieux
+
+- [interaction avec audience] Qu'est-ce qui arriverait si on n'agissait pas dès maintenant?
+- La communauté internationale de cybersécurité a agit -> voici comment
+- les autorités canadiennes ont agit -> voici comment (roadmap de CCCS et obligations contraignante)
+
+message à décideurs-cybersécurité => C'est un enjeu important. Est-ce qu'il est couvert par vos processus cyber? Fait-il partie de vos axes d'analyse, de vos veilles stratégiques?
+
+##### diapo 5: recadrage nécessaire
+
+On passe immédiatement à "du concret linux". 
+
+voici ce dont la diapo 5 traitera:
+
+- Message à decideurs-cyber => linux est une infrastructure stratégique fondamentale et irremplaçable -> [conséquence] il faut l'entretenir. donc investir dans son entretien.
+- coeur du contenu: les 6 catégories d'usage de linux
+- l'importance, le rôle et l'implémentation de la crypto dépend grandement de la catégorie d'usage et chaque type d'usage comporte ses défis
+- inclure 2 tableaux:
+  - catégorie, distributions dominantes, usage, importance stratégique 
+  - catégorie, distributions, usage crypto, défis cryptos
+- message audience linux: Vous devez comprendre
+
+##### diapo 6: recadrage nécessaire
+
+On arrive dans le vif du sujet et la technique.
+
+- Message à décideurs-cyber => les équipes opérationnels linux ont besoin d'une formation basique de linux-PQC. En 1 journée de formation, ça leur permet de prendre en charge 80% du risque opérationnel. Et ça fait les rend capable d'identifier et de remonter le risque à équipe cyber.
+
+- Malgré la diversité des distributions, on a seulement un petit nombre de "briques logicielles" à considérer
+- décrire à haut niveau (1 tableau)
+- ensuite (en raison de upstream/downstream), "le flux de mise en production des améliorations" dépend de 
+- caractériser le "flux":
+  - feuille de route (choix stratégique de l'éditeur)
+  - modèle de publication
+- tableau: categorie, distro, modèle de publication, feuille de route PQC
+
+
+- messages à audience linux:
+  - connaissez-vous la feuille de route PQC?
+  - est-ce que le doublet roadmap+publication est cohérent avec vos besoins de protection (sécurité des données)
+
+##### diapo 7: Le + technique
+
+On conserve.
+
+Explique en détail et techniquement ce que sont les "briques fondamentales de la crypto linux".
+
+tableau: brique (librairie), no de version début PQC, fonctionalité PQC livrées + no de version, next PQC sur roadmap.
+
+Contenu le + important pour audience linux.
+
+On étend au besoin.
+
+
+##### diapo 8 -> tableau recapitulatif
+
+tableau similaire à ceux de diapo 5
  
+tableau:  catégorie, distributions, maturité PQC (meneur, challenger ou à la traine), pourquoi ?
+
+
+#### diapo 9 -> diapo démo
+
+la démo fait l'objet d'une préparation à part.
+
+on utilise "diapo demo" comme placeholder 
+
+##### conclusion et appel
+
+diapo x: ne pas compter dans les 10
+
+#### TODO
+
+On retravaille les 4 documents dans `@.dev/artefacts/`
+
+On concerve inchangé les objectifs de comm 01.
+
+On prend en compte les directives et commentaires précédents pour réécrire:
+
+- le récit 02
+- le plan 03, et
+- le verbatim 04
+
+### 3. 2e round d'ajustement
+
+#### Feedback de la dernière révision
+
+##### Considérations tactiques de communication (motifs récurents) 
+
+1. Ajouter: tactique rhétorique pour l'appel l'action et pour établir notre crédibilité
+
+-> DÉCISION: On adopte la stratégie décrite à la section "leitmotiv" de TKT-010.
+
+2. recadrer -> responsabilisé -> outiller
+
+-> Décision: adopté
+
+3. posture expert spécialiste de référence
+
+calme, concret, compétent
+
+-> décision: adopté
+
+##### Le récit
+
+Décision: maturité suffisante
+
+TODO:
+
+- adapter pour bien exprimer la tactique de communication
+- réécrire pour supprimer les références aux versions précédente
+- on vise une version finale: auto-cohérent, audience: noumanity&co
+
+##### Le plan
+
+Décision: maturité suffisante
+
+TODO:
+
+généralités:
+
+- réécrire pour supprimer les références aux versions précédente
+- on vise une version finale: auto-cohérent, audience: noumanity&co
+
+Ajustements mineurs:
+
+- objectif de la diapo: doit être l'objectif de la diapo
+- pour chaque diapo, mettre message décideurs-cyber + message communauté-linux
+
+
+#### TODO
+
+Mettre à jour les documents `@.dev/artefacts/*`
+
+- ne pas toucher à 01
+- mettre 02 et 03 au propre pour une audience noumanity&co (équipe de préparation de la présentation) en tenant compte des directives et commentaires du ticket
+- dans 04-verbatim, estimer le temps nécessaire pour présenter chaque diapositive
