@@ -49,14 +49,15 @@
 
 ### Diapo 4 : c'est déjà pris en charge, et vous ?
 
-- **Objectif** : prouver par l'exemple que l'enjeu est cadré, et renvoyer la responsabilité à l'auditeur.
-- **Message décideurs** : cet enjeu est-il couvert par vos processus cyber, vos axes d'analyse, vos veilles stratégiques ?
-- **Message communauté** : les standards existent et sont déjà dans vos outils ; ce n'est pas de la science-fiction.
-- **Leitmotiv** : qu'arriverait-il si on était les seuls à ne pas agir ? Puis : voici comment les autres s'y prennent.
+- **Objectif** : prouver par l'exemple que l'enjeu est cadré, renvoyer la responsabilité à l'auditeur, et lui remettre un premier outil d'auto-évaluation immédiatement utilisable.
+- **Message décideurs** : cet enjeu est-il couvert par vos processus cyber, vos axes d'analyse, vos veilles stratégiques ? Et voici un outil que vous pouvez appliquer dès aujourd'hui pour situer votre posture.
+- **Message communauté** : les standards existent et sont déjà dans vos outils ; un calcul simple vous dit où vous en êtes.
+- **Leitmotiv** : qu'arriverait-il si on était les seuls à ne pas agir ? Puis : voici comment les autres s'y prennent, et voici comment mesurer votre propre posture, c'est à votre portée.
 - **Contenu** :
   - [interaction] « Qu'arriverait-il si on n'agissait pas dès maintenant ? »
   - La communauté internationale a agi : standards NIST (FIPS 203 ML-KEM, 204 ML-DSA, 205 SLH-DSA, 2024), équivalents BSI, ANSSI, ETSI, déclaration du G7.
   - Les autorités canadiennes ont agi : feuille de route du Centre canadien pour la cybersécurité (ITSM.40.001, en vigueur le 23 juin 2025) avec obligations contraignantes pour les systèmes du gouvernement (migrer toute la cryptographie à clé publique) ; guide aux organisations (ITSAP.00.017).
+  - **Et vous ? L'inégalité de Mosca, outil immédiatement utilisable** : si la durée de vie de confidentialité de vos données (X) plus le temps nécessaire pour migrer (Y) dépasse le temps restant avant le Q-Day (Z), vous êtes déjà en retard. Chacun applique le calcul à sa propre infrastructure, séance tenante ; l'outil fait monter en compétence les deux audiences. Source : [FND-010](../fondations/FND-010-risque-quantique-notion-et-prise-en-charge.md).
 
 ### Diapo 5 : Linux, infrastructure stratégique
 

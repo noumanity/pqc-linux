@@ -356,3 +356,10 @@ S'appuyer sur le cadre théorique de  FND-012
 - extraire les éléments de tactique de comm du document "02 récit" et les inclure dans le plan de communication
 
 Dans le répertoire du ticket, produire une analyse critique de "03 plan de présentation" en confrontant les éléments théorique de FND-012, les objectifs de comm de 02 et la performance envisagée par 03.
+
+### 6. ajout final pour le plan
+
+#### Inégalité de Mosca
+
+- introduire la notion à acte 3 / diapo 4: et vous? -> vou pouvez utiliser immédiatement l'inégalité de mosca pour mieux connaitre votre posture PQC !!
+

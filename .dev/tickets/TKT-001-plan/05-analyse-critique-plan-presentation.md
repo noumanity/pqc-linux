@@ -2,6 +2,8 @@
 
 > **Objet / Résumé** : analyse critique du plan de présentation [03](../../artefacts/03-plan-10-diapos.md), en le confrontant à trois références : le cadre théorique de [FND-012](../../fondations/FND-012-cadres-du-plan-de-communication.md), le plan de communication et la tactique ([01](../../artefacts/01-plan-de-communication.md) et [02](../../artefacts/02-argumentaire-recit.md)), et la performance envisagée (telle que décrite par 03 et le verbatim [04](../../artefacts/04-verbatim-par-diapo.md)). L'autre livrable de la tâche 5 est la transformation de 01 en plan de communication. La critique vise l'amélioration, pas la validation : elle relève autant les forces que les faiblesses.
 
+> **Mise à jour (tâche 6)** : la recommandation 1 ci-dessous (intégrer l'inégalité de Mosca, point 3.2) a depuis été **mise en oeuvre** : Mosca est ajouté à l'acte 3 / diapo 4 comme outil d'auto-évaluation immédiatement utilisable (voir [03](../../artefacts/03-plan-10-diapos.md) diapo 4 et [04](../../artefacts/04-verbatim-par-diapo.md)). Les autres recommandations restent ouvertes.
+
 ## 1. Méthode
 
 On évalue 03 selon trois axes confrontés.

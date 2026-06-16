@@ -11,14 +11,14 @@ Total visé : environ **20 à 23 minutes**. Diapos 5, 6 et 9 (le coeur et la dé
 | 1. Accroche | 1 min 30 |
 | 2. Vrai plan | 1 min 00 |
 | 3. Repenser le risque | 2 min 30 |
-| 4. Déjà pris en charge | 2 min 30 |
+| 4. Déjà pris en charge (avec Mosca) | 3 min 15 |
 | 5. Linux infrastructure | 3 min 00 |
 | 6. Flux upstream | 3 min 00 |
 | 7. Briques (technique) | 2 min 30 |
 | 8. Carte de maturité | 1 min 30 |
 | 9. Démo | 3 min 30 |
 | x. Conclusion et appel | 1 min 30 |
-| **Total** | **environ 22 min** |
+| **Total** | **environ 23 min** |
 
 ## Diapo 1 : l'accroche (1 min 30)
 
@@ -54,7 +54,7 @@ Total visé : environ **20 à 23 minutes**. Diapos 5, 6 et 9 (le coeur et la dé
 
 « Alors posons la question qui va nous suivre toute la présentation : **qu'arriverait-il si on n'agissait pas ?** Gardez-la en tête. »
 
-## Diapo 4 : c'est déjà pris en charge, et vous ? (2 min 30)
+## Diapo 4 : c'est déjà pris en charge, et vous ? (3 min 15)
 
 *(Ton qui s'ouvre. Interaction avec la salle.)*
 
@@ -66,9 +66,15 @@ Total visé : environ **20 à 23 minutes**. Diapos 5, 6 et 9 (le coeur et la dé
 
 « Et le Canada n'est pas en reste, comme **régulateur**. Le Centre canadien pour la cybersécurité a publié une feuille de route de migration, entrée en vigueur en juin 2025, avec des **obligations contraignantes** : les systèmes du gouvernement doivent migrer toute leur cryptographie à clé publique. Il y a même un guide pour les organisations. Voilà comment les autres s'y prennent : c'est cadré, c'est balisé. »
 
+*(Pivot vers l'outil, ton concret.)*
+
+« Et vous, alors ? Comment savoir où **vous** en êtes ? Il y a un outil tout simple, l'inégalité de Mosca. Prenez trois nombres. Un : combien d'années vos données doivent rester confidentielles. Deux : combien d'années il vous faut pour migrer votre cryptographie. Trois : combien d'années avant que l'ordinateur quantique arrive. Si vous additionnez les deux premiers et que ça dépasse le troisième, vous êtes **déjà** en retard. »
+
+« Et la beauté de la chose, c'est que vous pouvez faire ce calcul ce soir, sur votre propre infrastructure. C'est ça que je veux vous donner : pas une frayeur, un outil. »
+
 *(Temps. Regard aux décideurs.)*
 
-« Donc la question n'est plus de savoir si c'est sérieux. C'est : est-ce que ce risque est couvert par **vos** processus de cybersécurité ? Est-il dans **vos** veilles stratégiques ? »
+« Donc la question n'est plus de savoir si c'est sérieux. C'est : où en êtes-vous, et est-ce que ce risque est couvert par **vos** processus de cybersécurité, **vos** veilles stratégiques ? »
 
 ## Diapo 5 : Linux, infrastructure stratégique (3 min 00)
 
