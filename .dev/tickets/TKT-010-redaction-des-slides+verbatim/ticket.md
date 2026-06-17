@@ -97,10 +97,16 @@ puis, à chaque fois, on dit: voici comment faire, c'est facile
 Effet recherché: un Appel à l'action implicite -> ce n'est pas pas facile pour moi, je contacte noumanity&co parce que ils savent quoi faire et pour eux c'est facile
 
 
-
-
 ## Proposition
 
 1. puisser dans les idées concrètes brutes
 2. dans les tâches, on focuse sur rédaction de slides, une à la fois.
 3. Livrables attendus: 10 slides détaillées avec verbatim
+
+## Tâches
+
+### 1. initialisation des diapos
+
+produire les diapos de 1 à 10 en tant que fichier plan avec son titre et contenu "todo"é
+
+Mettre le verbatim de chaque diapo dans son fichier verbatim. Et une fois que tous les verbatims sont transférés, supprimé @.dev/artefact/04-vermatim-par-diapo.md

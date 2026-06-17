@@ -63,9 +63,10 @@ local function render_body(text)
     lines[#lines+1] = line
   end
 
-  local out   = {}
-  local state = "para"
-  local para  = {}
+  local out      = {}
+  local state    = "para"
+  local para     = {}
+  local tbl_rows = {}
 
   local function flush_para()
     if #para > 0 then
@@ -90,38 +91,93 @@ local function render_body(text)
     end
   end
 
-  for _, line in ipairs(lines) do
-    local nested = line:match("^%s%s+[%-*]%s+(.*)")
-    local top    = line:match("^[%-*]%s+(.*)")
+  local function parse_cells(line)
+    local inner = line:match("^%s*|(.+)|%s*$") or line:match("^%s*|(.+)")
+    if not inner then return {} end
+    local cells = {}
+    for cell in (inner .. "|"):gmatch("([^|]*)|") do
+      cells[#cells+1] = cell:match("^%s*(.-)%s*$") or ""
+    end
+    return cells
+  end
 
-    if nested then
+  local function flush_table()
+    if #tbl_rows == 0 then return end
+    local header = tbl_rows[1]
+    local ncols  = #header
+    if ncols == 0 then tbl_rows = {}; return end
+    local result = {}
+    result[#result+1] = "\\begin{tabular}{" .. string.rep("l", ncols) .. "}"
+    result[#result+1] = "\\toprule"
+    local hcells = {}
+    for _, c in ipairs(header) do hcells[#hcells+1] = process_line(c) end
+    result[#result+1] = table.concat(hcells, " & ") .. " \\\\"
+    result[#result+1] = "\\midrule"
+    -- tbl_rows[2] est la ligne séparatrice (---|---), on la saute
+    for i = 3, #tbl_rows do
+      local row    = tbl_rows[i]
+      local dcells = {}
+      for ci = 1, ncols do
+        dcells[#dcells+1] = process_line(row[ci] or "")
+      end
+      result[#result+1] = table.concat(dcells, " & ") .. " \\\\"
+    end
+    result[#result+1] = "\\bottomrule"
+    result[#result+1] = "\\end{tabular}"
+    out[#out+1] = table.concat(result, "\n")
+    out[#out+1] = ""
+    tbl_rows = {}
+  end
+
+  for _, line in ipairs(lines) do
+    if line:match("^%s*|") then
+      -- Ligne de tableau
       flush_para()
-      if state == "para" then
-        out[#out+1] = "\\begin{itemize}\\setlength{\\itemsep}{2pt}"
-        state = "item1"
-      end
-      if state == "item1" then
-        out[#out+1] = "  \\begin{itemize}\\setlength{\\itemsep}{1pt}"
-        state = "item2"
-      end
-      out[#out+1] = "    \\item " .. process_line(nested)
-    elseif top then
-      flush_para()
-      close_item2()
-      if state == "para" then
-        out[#out+1] = "\\begin{itemize}\\setlength{\\itemsep}{2pt}"
-        state = "item1"
-      end
-      out[#out+1] = "  \\item " .. process_line(top)
-    elseif line == "" then
       close_items()
-      flush_para()
+      tbl_rows[#tbl_rows+1] = parse_cells(line)
     else
-      close_items()
-      para[#para+1] = process_line(line)
+      flush_table()
+      local hashes, htxt = line:match("^(#+)%s+(.*)")
+      local nested        = line:match("^%s%s+[%-*]%s+(.*)")
+      local top           = line:match("^[%-*]%s+(.*)")
+
+      if hashes then
+        flush_para(); close_items()
+        local lvl = #hashes
+        local t   = process_line(htxt)
+        if     lvl == 1 then out[#out+1] = "{\\large\\textbf{\\structure{" .. t .. "}}\\par\\vspace{0.2em}}"
+        elseif lvl == 2 then out[#out+1] = "{\\textbf{\\structure{" .. t .. "}}\\par\\vspace{0.1em}}"
+        elseif lvl == 3 then out[#out+1] = "{\\textbf{" .. t .. "}\\par}"
+        else              out[#out+1] = "{\\textit{" .. t .. "}\\par}"
+        end
+      elseif nested then
+        flush_para()
+        if state == "para" then
+          out[#out+1] = "\\begin{itemize}\\setlength{\\itemsep}{2pt}"
+          state = "item1"
+        end
+        if state == "item1" then
+          out[#out+1] = "  \\begin{itemize}\\setlength{\\itemsep}{1pt}"
+          state = "item2"
+        end
+        out[#out+1] = "    \\item " .. process_line(nested)
+      elseif top then
+        flush_para(); close_item2()
+        if state == "para" then
+          out[#out+1] = "\\begin{itemize}\\setlength{\\itemsep}{2pt}"
+          state = "item1"
+        end
+        out[#out+1] = "  \\item " .. process_line(top)
+      elseif line == "" then
+        close_items(); flush_para()
+      else
+        close_items()
+        para[#para+1] = process_line(line)
+      end
     end
   end
 
+  flush_table()
   close_items()
   flush_para()
   return table.concat(out, "\n")
@@ -147,6 +203,15 @@ end
 -- Detecter si un segment ressemble a du YAML
 local function is_yaml_like(s)
   return s:match("^%s*[%a][%a%d%-_]*%s*:") ~= nil
+end
+
+-- Normaliser un code couleur hex : enlever le # et étendre les codes courts (3->6)
+local function normalize_hex(raw)
+  local hex = (raw or ""):gsub("^#", "")
+  if #hex == 3 then
+    hex = hex:sub(1,1):rep(2) .. hex:sub(2,2):rep(2) .. hex:sub(3,3):rep(2)
+  end
+  return hex
 end
 
 -- Nettoyer la valeur brute d'un champ de chemin (prefixe @, espaces echappes)
@@ -326,12 +391,18 @@ local function build_ctx(meta, body, config, root, workdir_assets)
   for k, v in pairs(config) do ctx[k] = v end
 
   -- Nouveau format : fusionner global-params, params, puis content
+  local title_style = {}
   if meta.diapo then
     local gparams = meta["global-params"] or {}
     local params  = meta.params            or {}
     local content = meta.content           or {}
     for k, v in pairs(gparams)  do ctx[k] = v end
     for k, v in pairs(params)   do ctx[k] = v end
+    -- Capturer les styles de titre avant que content.title écrase le champ
+    if type(params.title) == "table"
+       and (params.title["background-color"] or params.title["font-color"]) then
+      title_style = params.title
+    end
     for k, v in pairs(content)  do ctx[k] = v end
     ctx["model"] = (meta.diapo or {}).model or config["default_model"] or "plain"
   else
@@ -339,9 +410,9 @@ local function build_ctx(meta, body, config, root, workdir_assets)
     for k, v in pairs(meta) do ctx[k] = v end
   end
 
-  -- Background : supporte "background" et "background-image" (alias)
+  -- Background : image en priorité, couleur de fond unie sinon
   local bg_raw = ctx["background"] or ctx["background-image"]
-  if bg_raw and bg_raw ~= "" then
+  if bg_raw and type(bg_raw) == "string" and bg_raw ~= "" then
     local bg_path = resolve_asset(clean_path_str(bg_raw), root, workdir_assets)
     if bg_path then
       ctx["background_block"] =
@@ -354,7 +425,17 @@ local function build_ctx(meta, body, config, root, workdir_assets)
       ctx["background_block"] = ""
     end
   else
-    ctx["background_block"] = ""
+    local bg_color = ctx["background-color"]
+    if bg_color and type(bg_color) == "string" and bg_color ~= "" then
+      local hex = normalize_hex(bg_color)
+      ctx["background_block"] =
+        "\\definecolor{bgslide}{HTML}{" .. hex .. "}\n"
+        .. "\\begin{tikzpicture}[remember picture, overlay]\n"
+        .. "  \\fill[bgslide] (current page.south west) rectangle (current page.north east);\n"
+        .. "\\end{tikzpicture}"
+    else
+      ctx["background_block"] = ""
+    end
   end
 
   -- Auteurs
@@ -379,6 +460,28 @@ local function build_ctx(meta, body, config, root, workdir_assets)
     if p then logo_paths[#logo_paths+1] = p end
   end
   ctx["logos_formatted"] = format_logos(logo_paths)
+
+  -- Couleurs du titre de frame (params.title.background-color / font-color)
+  local t_bg = title_style["background-color"]
+  local t_fg = title_style["font-color"]
+  if (t_bg and type(t_bg) == "string" and t_bg ~= "")
+   or (t_fg and type(t_fg) == "string" and t_fg ~= "") then
+    local defs  = {}
+    local parts = {}
+    if t_bg and type(t_bg) == "string" and t_bg ~= "" then
+      defs[#defs+1]   = "\\definecolor{tFrameBg}{HTML}{" .. normalize_hex(t_bg) .. "}"
+      parts[#parts+1] = "bg=tFrameBg"
+    end
+    if t_fg and type(t_fg) == "string" and t_fg ~= "" then
+      defs[#defs+1]   = "\\definecolor{tFrameFg}{HTML}{" .. normalize_hex(t_fg) .. "}"
+      parts[#parts+1] = "fg=tFrameFg"
+    end
+    ctx["title_color_block"] =
+      table.concat(defs, "\n") .. "\n"
+      .. "\\setbeamercolor{frametitle}{" .. table.concat(parts, ",") .. "}"
+  else
+    ctx["title_color_block"] = ""
+  end
 
   -- Corps Markdown
   ctx["content"] = render_body(body)

@@ -4,7 +4,7 @@ diapo:
 content:
   title: no title
 params:
-  background-color: #E3E 
+  background-color: '#E3E'
 ---
 
 Contenu Markdown de la slide.

@@ -7,4 +7,4 @@
 default_model: plain
 
 # Couleur de fond globale (vide = aucun fond)
-background-color: #EEE
+background-color: '#EEE'
