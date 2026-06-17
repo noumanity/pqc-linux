@@ -6,6 +6,7 @@
 
 # repertoire de travail (test demo)
 workdir/
+.dev
 
 # non pertinent pour la préparation de la présentation
 .dev/adr/ADR-001*
