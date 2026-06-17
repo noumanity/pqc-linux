@@ -1,0 +1,18 @@
+# config.yaml - paramètres globaux de la présentation
+# Consommé par scripts/render_slide.py (tous les slides).
+# Un champ défini dans l'en-tête YAML d'un slide l'emporte sur ce fichier.
+
+title:    "Comment les distributions Linux s'adaptent-elles au \xABrisque quantique\xBB ?"
+subtitle: "Cryptographie post-quantique et feuilles de route"
+
+authors:
+  - "J\xE9r\xE9my Viau-Trudel - Sp\xE9cialiste DevSecOps"
+  - "Andr\xE9 Gerges - Conseiller en recherche en cybers\xE9curit\xE9 et conformit\xE9"
+
+demo:     "Ikram Zahiri - \xC9tudiante en g\xE9nie logiciel"
+date:     "17 juin 2026"
+event:    "Rencontres Linux du Qu\xE9bec"
+location: "Qu\xE9bec, QC"
+
+# Modèle Beamer par défaut si absent de l'en-tête slide.
+default_model: plain

@@ -1,0 +1,49 @@
+% beamerthemeNoumanity.sty - Thème Beamer Noumanity (prototype)
+% Couleurs : branding.yml (orange #FA4D1F, noir #000000)
+% Polices  : Latin Modern (prototype) ; remplacer par fontspec + Arimo/ABeeZee avec lualatex.
+\mode<presentation>
+
+\RequirePackage{xcolor}
+\RequirePackage{graphicx}
+\RequirePackage{tikz}
+
+% --- Couleurs de marque ---
+\definecolor{NoumanityOrange}{HTML}{FA4D1F}
+\definecolor{NoumanityBlack}{HTML}{000000}
+\definecolor{NoumanityWhite}{HTML}{FFFFFF}
+
+\setbeamercolor{normal text}{fg=NoumanityBlack, bg=NoumanityWhite}
+\setbeamercolor{structure}{fg=NoumanityOrange}
+\setbeamercolor{frametitle}{fg=NoumanityWhite, bg=NoumanityOrange}
+\setbeamercolor{title}{fg=NoumanityOrange, bg=NoumanityWhite}
+\setbeamercolor{item}{fg=NoumanityOrange}
+\setbeamercolor{subitem}{fg=NoumanityOrange}
+\setbeamercolor{block title}{fg=NoumanityWhite, bg=NoumanityOrange}
+\setbeamercolor{block body}{fg=NoumanityBlack, bg=NoumanityWhite!92!NoumanityOrange}
+
+% --- Pas de symboles de navigation ---
+\setbeamertemplate{navigation symbols}{}
+
+% --- Pied de page : numéro de diapo à droite ---
+\setbeamertemplate{footline}{%
+  \hfill{%
+    \usebeamerfont{footline}%
+    \color{NoumanityBlack!60}%
+    \insertframenumber\,/\,\inserttotalframenumber%
+    \hspace{0.6em}\vspace{0.35em}%
+  }%
+}
+
+% --- Titre de frame avec bandeau orange ---
+\setbeamertemplate{frametitle}{%
+  \nointerlineskip%
+  \begin{beamercolorbox}[wd=\paperwidth,ht=0.65cm,dp=0.18cm,leftskip=0.5cm]{frametitle}%
+    \usebeamerfont{frametitle}\insertframetitle%
+  \end{beamercolorbox}%
+}
+
+% --- Listes ---
+\setbeamertemplate{itemize item}{\textcolor{NoumanityOrange}{\textbullet}}
+\setbeamertemplate{itemize subitem}{\textcolor{NoumanityOrange}{\textendash}}
+
+\mode<all>

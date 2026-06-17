@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+# Usage : . activate
+# Ajoute scripts/ au PATH et exporte PRESENTATION_ROOT.
+
+export PRESENTATION_ROOT
+PRESENTATION_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+export PATH="$PRESENTATION_ROOT/scripts:$PATH"
+
+_missing=""
+command -v pdflatex  >/dev/null 2>&1 || _missing="$_missing pdflatex"
+command -v inkscape  >/dev/null 2>&1 || _missing="$_missing inkscape"
+command -v convert   >/dev/null 2>&1 || _missing="$_missing imagemagick(convert)"
+command -v python3   >/dev/null 2>&1 || _missing="$_missing python3"
+
+if [ -n "$_missing" ]; then
+    echo "[WARN] Dépendances manquantes :$_missing" >&2
+fi
+
+echo "[OK] Environnement chargé - PRESENTATION_ROOT=$PRESENTATION_ROOT"
