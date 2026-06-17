@@ -1,0 +1,7 @@
+Catégorie,Usage principal,Exemple,Version PQC
+Pile TLS générale,"HTTPS, chiffrement",OpenSSL,3.5.0 (avr. 2025)
+Accès à distance,SSH,OpenSSH,10.0 (avr. 2025)
+Runtime cloud-native,"microservices, Kubernetes",pile Go,1.24 (jan. 2025)
+Pile TLS embarquée,"IoT, routeurs",wolfSSL,v7.0
+Pile TLS navigateurs,"HTTPS (Chrome, Firefox)",BoringSSL / NSS,2024+
+Crypto noyau Linux,opérations système,Linux kernel,travaux en cours

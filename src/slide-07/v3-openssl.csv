@@ -1,0 +1,4 @@
+Version,Fonctionnalités PQC,Statut
+< 3.2,aucune,non supporté
+3.2.x,via fournisseur OQS externe (liboqs),contournement
+3.5.0 (avr. 2025),"ML-KEM, ML-DSA, SLH-DSA natifs",**disponible**

@@ -80,16 +80,33 @@ gen() {
     cp "$TEMPLATES/theme/"*.sty "$WORKDIR/"
     texlua "$ROOT/scripts/theme_helper.lua" "$THEME_YAML" "$WORKDIR/theme.generated.tex"
 
+    # Pre-passe : calculer la numerotation <sec>.<diapo> pour chaque slide
+    declare -A _sec_nums
+    declare -A _slide_nums
+    local _nb_inputs=()
+    for _sd in "$SLIDES_SRC"/slide-*/; do
+        [ -f "${_sd}content.md" ] && _nb_inputs+=("${_sd}content.md")
+    done
+    if [ ${#_nb_inputs[@]} -gt 0 ]; then
+        while IFS=$'\t' read -r _dir _sn _dn; do
+            _sec_nums["$_dir"]="$_sn"
+            _slide_nums["$_dir"]="$_dn"
+        done < <(texlua "$ROOT/scripts/compute_numbering.lua" "${_nb_inputs[@]}")
+    fi
+
     local slide_tex_files=()
     for slide_dir in "$SLIDES_SRC"/slide-*/; do
         local content_md="$slide_dir/content.md"
         [ -f "$content_md" ] || continue
         local name; name=$(basename "$slide_dir")
         local num="${name#slide-}"
+        local _sn="${_sec_nums[$slide_dir]:-}"
+        local _dn="${_slide_nums[$slide_dir]:-}"
 
         # Mode verbatim : intercaler la page verbatim avant le slide (si verbatim.md existe)
         if $opt_verbatim && [ -f "$slide_dir/verbatim.md" ]; then
             local verbatim_out="$WORKDIR_TEX/${name}-verbatim.tex"
+            NOU_SEC_NUM="$_sn" NOU_SLIDE_NUM="$_dn" \
             texlua "$ROOT/scripts/render_slide.lua" \
                 "$content_md" \
                 "$CONFIG_YAML" \
@@ -102,6 +119,7 @@ gen() {
         fi
 
         local out="$WORKDIR_TEX/${name}.tex"
+        NOU_SEC_NUM="$_sn" NOU_SLIDE_NUM="$_dn" \
         texlua "$ROOT/scripts/render_slide.lua" \
             "$content_md" \
             "$CONFIG_YAML" \

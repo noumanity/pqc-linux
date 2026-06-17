@@ -15,29 +15,33 @@ content:
 - Leitmotiv : qu'arriverait-il si on laissait ce socle sans entretien cryptographique ?
 
 ---
+diapo:
+  model: tableau
 content:
   title: "Six catégories d'usage, six importances stratégiques"
+  csv: "@src/slide-05/v2-six-usages.csv"
+  columns:
+    - ratio: 0.27
+      wrap: true
+    - ratio: 0.38
+      wrap: true
+    - ratio: 0.35
+      wrap: true
 ---
 
-| Catégorie | Usage principal | Importance stratégique |
-|---|---|---|
-| Entreprises et HPC | Systèmes critiques, supercalcul | Très élevée (valeur, criticité) |
-| Communautaires | Socle amont, web, bureau avancé | Élevée (amont de l'écosystème) |
-| Conteneur (images) | Base d'images cloud-native | Maximale (centre de gravité actuel) |
-| Mobile | Téléphones grand public | Maximale en volume (71 % Android) |
-| IoT et embarqué | Appareils, routeurs, edge, auto | Élevée et croissante, diffuse |
-| Spécialités notables | Hôtes de conteneurs immuables | Élevée (cloud-native moderne) |
-
 ---
+diapo:
+  model: tableau
 content:
   title: "Distributions par secteur d'activité"
+  csv: "@src/slide-05/v3-distributions.csv"
+  columns:
+    - ratio: 0.24
+      wrap: true
+    - ratio: 0.22
+      wrap: false
+    - ratio: 0.22
+      wrap: false
+    - ratio: 0.22
+      wrap: false
 ---
-
-| Catégorie | Dominante | Challenger | Notable |
-|---|---|---|---|
-| Entreprises et HPC | RHEL | SLES | Ubuntu Pro |
-| Communautaires | Debian | Fedora | Arch / openSUSE |
-| Conteneur | Alpine | Debian-slim / UBI | Wolfi |
-| Mobile | Android (AOSP) | postmarketOS | Ubuntu Touch |
-| IoT et embarqué | Yocto | OpenWrt | Buildroot |
-| Spécialités | Fedora CoreOS | Talos Linux | NixOS / Flatcar |

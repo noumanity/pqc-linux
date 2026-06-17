@@ -1,0 +1,4 @@
+Distribution,Posture,Ce qui est livré
+RHEL 10,Leader,"TLS hybride (OpenSSL, GnuTLS, NSS) ; signature RPM ML-DSA-87+Ed448 ; PQC par défaut dès 10.1"
+SLES 16,Challenger,"TLS hybride (OpenSSL, libgcrypt, NSS, Go) ; SSH PQC pas encore livré ; stratégie explicite publiée"
+Ubuntu,Tail,PQC natif avec 26.04 (avr. 2026) ; OQS disponible sur 24.04 LTS

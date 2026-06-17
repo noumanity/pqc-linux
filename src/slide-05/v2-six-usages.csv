@@ -1,0 +1,7 @@
+Catégorie,Usage principal,Importance stratégique
+Entreprises et HPC,Systèmes critiques et supercalcul,Très élevée (valeur et criticité)
+Communautaires,"Socle amont, web et bureau avancé",Élevée (amont de l'écosystème)
+Conteneur (images),Base d'images cloud-native,Maximale (centre de gravité actuel)
+Mobile,Téléphones grand public,Maximale en volume (71 % Android)
+IoT et embarqué,"Appareils, routeurs, edge et auto","Élevée et croissante, diffuse"
+Spécialités notables,Hôtes de conteneurs immuables,Élevée (cloud-native moderne)

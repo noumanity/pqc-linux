@@ -22,5 +22,85 @@ L'affichage des titres doit être uniforme peu importe le modèle.
 
 Corriger le titre de `plain`. Il doit être comme le message de `remerciements`, mais aligné à gauche et touchant les bordures gauche et haut
 
+### 5. numérotation
+
+on numérote séquentiellement les sections et les diapositive:
+
+<num_section>.<num_diapo_de_section>
+
+On ne numérote pas les variations. Une variation garde inchangée la numérotation
+
+Utiliser ce numéro dans l'affichage du titre:
+
+<sec>.<diapo>  <Titre>
+
+Utiliser ce numéro dans l'affichage de la section:
+
+
+<sec>.  <Section>
+
+
+### 6. fine tuning
+
+Pour le numéro du titre, Utiliser la même police, couleur, taille, etc que le titre.
+
+
+### 7. Ajout d'un modèle `tableau`
+
+Le tableau est une extention de plain.
+
+Permettant de:
+
+- prendre les données d'un fichier structuré
+- s'assurer d'un rendu lisible dans le pdf
+
+Fonctionnalités:
+- numérotation des tableaux
+- prend les données dans un csv
+- spécifie le ratio de l'espace occupé par les colonnes
+- spécifie si on accepte les saut de ligne
+
+
+Comportement attendu:
+
+- Par défaut, le tableau occupe tout l'espace disponible horizontalement
+- le tableau l'empète pas sur les marges
+- le contenu ne déborde dans la vue pdf.
+- S'il y a un débordement est identifié, je vois 2 manières de traiter:
+  - déborder en Rapportant un warning en orange dans l'output de la commande
+  - diminuer la police dynamiquement pour que tout le contenu rendre dans la page
+- les variations entre `plain` et `talbeau` (dérivation de plain) sont possible et autorisés. C'est à dire que pour une même diapo on peut avoir des variations de modèle plain et d'autres tableau
+
+TODO
+
+1. implémenter le modèle `tableau`
+
+2. convertir slide-05, variations 2 et 3, en `tableau`
+
+### 8. fine tune + use it
+
+pour améliorer la lisibilité des tableaux, une couleur de background très pâle sur les lignes en alternance
+
+Ensuite converti toutes les variations qui on des tableau vers le modèle `tableau`
+
+### 9. on ne voit pas la couleur des lignes impair
+
+Appliquer une couleur de fond à toutes les lignes impair.
+
+### 10. Fix numérotation
+
+La numérotation n'est pas correcte.
+
+Voici ce qu'il faut faire
+
+format titre=> X.Y titre
+format section => X. section
+
+ordre: suivre l'ordre séquentiel ascendant des diapos de type `plain` ou dérivé de plain (tableau)
+
+pour l'incrémentation, on considère: la diapo courante et la 
+
+
+1. incrément de section
 
 

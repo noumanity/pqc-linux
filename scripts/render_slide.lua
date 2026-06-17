@@ -348,10 +348,13 @@ local function paginate_verbatim_blocks(text)
 end
 
 -- Fusion profonde de deux tables (override ecrase base)
+-- Les séquences (arrays) de l'override remplacent entièrement celles de la base,
+-- car fusionner des listes (authors, logos, columns...) n'a pas de sens sémantique.
 local function deep_merge(base, override)
   if type(base) ~= "table" or type(override) ~= "table" then
     return override
   end
+  if override[1] ~= nil then return override end  -- array : remplacement total
   local result = {}
   for k, v in pairs(base) do result[k] = v end
   for k, v in pairs(override) do
@@ -551,6 +554,91 @@ local function read_verbatim_body(path)
   return s:match("^%s*(.*%S)%s*$") or ""
 end
 
+-- Parser CSV basique (RFC 4180 : guillemets pour cellules avec virgule ou guillemet)
+local function parse_csv(path)
+  local fh = io.open(path, "r")
+  if not fh then return nil end
+  local rows = {}
+  for line in fh:lines() do
+    if not line:match("^%s*$") then
+      local row, i, len = {}, 1, #line
+      while i <= len do
+        if line:sub(i,i) == '"' then
+          i = i + 1
+          local cell = {}
+          while i <= len do
+            local c = line:sub(i,i)
+            if c == '"' then
+              if line:sub(i+1,i+1) == '"' then cell[#cell+1] = '"'; i = i + 2
+              else i = i + 1; break end
+            else cell[#cell+1] = c; i = i + 1 end
+          end
+          row[#row+1] = table.concat(cell)
+          if line:sub(i,i) == "," then i = i + 1 end
+        else
+          local j = line:find(",", i, true)
+          if j then row[#row+1] = line:sub(i, j-1); i = j + 1
+          else   row[#row+1] = line:sub(i);          i = len + 1 end
+        end
+      end
+      rows[#rows+1] = row
+    end
+  end
+  fh:close()
+  return rows
+end
+
+-- Générer le code LaTeX d'un tableau depuis des données CSV et des specs de colonnes.
+-- col_specs : liste de { ratio=number, wrap=bool }
+local function build_table_tex(rows, col_specs)
+  if not rows or #rows == 0 then return "" end
+  local ncols = #(rows[1] or {})
+  if ncols == 0 then return "" end
+
+  if not col_specs or #col_specs == 0 then
+    col_specs = {}
+    for i = 1, ncols do col_specs[i] = { ratio = 1.0 / ncols, wrap = true } end
+  end
+
+  local total = 0
+  for _, cs in ipairs(col_specs) do total = total + (tonumber(cs.ratio) or (1.0/ncols)) end
+  if total > 1.05 then
+    io.stderr:write("[WARN] tableau : somme des ratios = " ..
+      string.format("%.2f", total) .. " > 1.0 ; risque de débordement.\n")
+  end
+  local adj = math.min(1.0, 0.93 / math.max(total, 0.01))
+
+  local col_parts = {}
+  for _, cs in ipairs(col_specs) do
+    local w = string.format("%.4f", (tonumber(cs.ratio) or (1.0/ncols)) * adj)
+    col_parts[#col_parts+1] = "p{" .. w .. "\\linewidth}"
+  end
+
+  local out = {}
+  out[#out+1] = "\\small\\begin{tabular}{" .. table.concat(col_parts) .. "}"
+  out[#out+1] = "\\toprule"
+  for ri, row in ipairs(rows) do
+    local cells = {}
+    for ci = 1, ncols do
+      local cell = inline_md(tex_escape((row[ci] or ""):match("^%s*(.-)%s*$") or ""))
+      cells[#cells+1] = ri == 1 and ("\\textbf{" .. cell .. "}") or cell
+    end
+    local row_line = table.concat(cells, " & ") .. " \\\\"
+    if ri == 1 then
+      out[#out+1] = row_line
+      out[#out+1] = "\\midrule"
+    elseif (ri % 2) == 0 then
+      -- lignes paires de données (1re, 3e, 5e...) : fond très pâle
+      out[#out+1] = "\\rowcolor{NoumanityBlack!5}" .. row_line
+    else
+      out[#out+1] = row_line
+    end
+  end
+  out[#out+1] = "\\bottomrule"
+  out[#out+1] = "\\end{tabular}"
+  return table.concat(out, "\n")
+end
+
 local function parse_height_cm(h)
   local n = tonumber((h or ""):match("([%d%.]+)cm"))
   return n or 1.1
@@ -668,6 +756,52 @@ local function build_ctx(meta, body, config, root, workdir_assets)
 
   -- Options de couleur du titre desactivees.
   ctx["title_color_block"] = ""
+
+  -- Tableau CSV (modèle tableau)
+  ctx["table_tex"]     = ""
+  ctx["table_num_tex"] = ""
+  local csv_raw = (type(ctx["csv"]) == "string") and ctx["csv"] or ""
+  if csv_raw ~= "" then
+    local csv_path = resolve_asset(clean_path_str(csv_raw), root, workdir_assets)
+    if csv_path then
+      local csv_data = parse_csv(csv_path)
+      if csv_data then
+        local col_specs = {}
+        local columns_raw = ctx["columns"] or {}
+        if type(columns_raw) == "table" then
+          for _, col in ipairs(columns_raw) do
+            if type(col) == "table" then
+              local w = col.wrap
+              col_specs[#col_specs+1] = {
+                ratio = tonumber(col.ratio) or 0.25,
+                wrap  = not (w == false or w == "false"),
+              }
+            end
+          end
+        end
+        ctx["table_tex"] = build_table_tex(csv_data, col_specs)
+      else
+        io.stderr:write("[WARN] tableau : impossible de lire le CSV : " .. csv_path .. "\n")
+      end
+    else
+      io.stderr:write("[WARN] tableau : CSV introuvable : " .. csv_raw .. "\n")
+    end
+  end
+  local tbl_num_raw = ctx["table-num"]
+  if tbl_num_raw and type(tbl_num_raw) ~= "table" then
+    ctx["table_num_tex"] = tex_escape(tostring(tbl_num_raw))
+  end
+
+  -- Numérotation <sec>.<diapo> passée par dev.sh gen via variables d'environnement.
+  local env_sec = os.getenv("NOU_SEC_NUM")   or ""
+  local env_sld = os.getenv("NOU_SLIDE_NUM") or ""
+  if env_sec ~= "" and env_sld ~= "" then
+    ctx["slide_label"]   = env_sec .. "." .. env_sld
+    ctx["section_label"] = env_sec .. "."
+  else
+    ctx["slide_label"]   = ""
+    ctx["section_label"] = ""
+  end
 
   -- Corps Markdown
   ctx["content"] = render_body(body)

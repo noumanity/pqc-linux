@@ -13,29 +13,36 @@ content:
 - **OpenSSL 3.5** et **OpenSSH 10**, c'est l'essentiel du chemin
 
 ---
+diapo:
+  model: tableau
 content:
   title: "Les composantes cryptographiques qui comptent"
+  csv: "@src/slide-07/v2-composantes.csv"
+  columns:
+    - ratio: 0.24
+      wrap: true
+    - ratio: 0.28
+      wrap: true
+    - ratio: 0.17
+      wrap: false
+    - ratio: 0.21
+      wrap: false
 ---
 
-| Catégorie | Usage principal | Exemple | Version PQC |
-|---|---|---|---|
-| Pile TLS générale | HTTPS, chiffrement | OpenSSL | 3.5.0 (avr. 2025) |
-| Accès à distance | SSH | OpenSSH | 10.0 (avr. 2025) |
-| Runtime cloud-native | microservices, Kubernetes | pile Go | 1.24 (jan. 2025) |
-| Pile TLS embarquée | IoT, routeurs | wolfSSL | v7.0 |
-| Pile TLS navigateurs | HTTPS (Chrome, Firefox) | BoringSSL / NSS | 2024+ |
-| Crypto noyau Linux | opérations système | Linux kernel | travaux en cours |
-
 ---
+diapo:
+  model: tableau
 content:
   title: "OpenSSL : versions et feuille de route PQC"
+  csv: "@src/slide-07/v3-openssl.csv"
+  columns:
+    - ratio: 0.20
+      wrap: false
+    - ratio: 0.53
+      wrap: true
+    - ratio: 0.20
+      wrap: false
 ---
-
-| Version | Fonctionnalités PQC | Statut |
-|---|---|---|
-| < 3.2 | aucune | non supporté |
-| 3.2.x | via fournisseur OQS externe (liboqs) | contournement |
-| 3.5.0 (avr. 2025) | ML-KEM, ML-DSA, SLH-DSA natifs | **disponible** |
 
 ## Feuille de route
 

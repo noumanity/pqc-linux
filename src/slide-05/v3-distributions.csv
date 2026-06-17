@@ -1,0 +1,7 @@
+Catégorie,Dominante,Challenger,Notable
+Entreprises et HPC,RHEL,SLES,Ubuntu Pro
+Communautaires,Debian,Fedora,Arch / openSUSE
+Conteneur,Alpine,Debian-slim / UBI,Wolfi
+Mobile,Android (AOSP),postmarketOS,Ubuntu Touch
+IoT et embarqué,Yocto,OpenWrt,Buildroot
+Spécialités,Fedora CoreOS,Talos Linux,NixOS / Flatcar
