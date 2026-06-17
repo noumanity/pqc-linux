@@ -640,6 +640,7 @@ local function build_ctx(meta, body, config, root, workdir_assets)
   ctx["date_tex"]     = tex_escape(ctx["date"])
   ctx["demo_tex"]     = tex_escape(ctx["demo"])
   ctx["location_tex"] = tex_escape(ctx["location"])
+  ctx["section_tex"]  = tex_escape(ctx["section"])
   ctx["message_tex"]  = inline_md(tex_escape(ctx["message"]))
   ctx["focus_tex"]    = inline_md(tex_escape(ctx["focus"]))
   local qr_url_raw    = (type(ctx["qr-url"]) == "string") and ctx["qr-url"] or ""

@@ -7,6 +7,9 @@ fields:
         description: "Titre de la slide"
         type: string
     optional:
+      - name: section
+        description: "Titre de section affiché en bas à droite (pied de page)"
+        type: string
       - name: background
         description: "Chemin vers l'image de fond (SVG, PNG, JPEG)"
         type: path

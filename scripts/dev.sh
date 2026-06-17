@@ -3,6 +3,9 @@
 #
 # Usage (apres `. activate`) :
 #   dev.sh gen                          - genere dist/presentation.pdf
+#   dev.sh gen --verbatim               - idem, avec pages verbatim intercalees
+#   dev.sh gen --dev                    - dist/<YYYY-MM-DD>_presentation-dev.pdf (avec verbatim)
+#   dev.sh gen --prod                   - dist/<YYYY-MM-DD>_presentation.pdf (sans verbatim)
 #   dev.sh clean                        - vide workdir/
 #   dev.sh model ls                     - liste les modeles disponibles
 #   dev.sh model explain MODEL          - affiche les champs d'un modele
@@ -49,12 +52,28 @@ clean() {
 
 gen() {
     local opt_verbatim=false
+    local mode=""
     while [[ $# -gt 0 ]]; do
         case "$1" in
             --verbatim) opt_verbatim=true; shift ;;
+            --dev)
+                [ -n "$mode" ] && { echo "[ERREUR] --dev et --prod sont exclusifs" >&2; exit 1; }
+                mode="dev"; shift ;;
+            --prod)
+                [ -n "$mode" ] && { echo "[ERREUR] --dev et --prod sont exclusifs" >&2; exit 1; }
+                mode="prod"; shift ;;
             *) echo "[ERREUR] Option inconnue : $1" >&2; exit 1 ;;
         esac
     done
+
+    # Convention de sortie : dev (avec verbatim) ou prod (sans verbatim), prefixes par la date.
+    # Sans --dev/--prod : comportement historique (dist/presentation.pdf).
+    local out_name="presentation.pdf"
+    local today; today=$(date +%F)
+    case "$mode" in
+        dev)  opt_verbatim=true;  out_name="${today}_presentation-dev.pdf" ;;
+        prod) opt_verbatim=false; out_name="${today}_presentation.pdf" ;;
+    esac
 
     mkdir -p "$WORKDIR_TEX" "$WORKDIR_ASSETS" "$DIST"
 
@@ -118,8 +137,8 @@ gen() {
     fi
 
     if [ -f "$WORKDIR/main.pdf" ]; then
-        cp "$WORKDIR/main.pdf" "$DIST/presentation.pdf"
-        echo "[OK] dist/presentation.pdf genere"
+        cp "$WORKDIR/main.pdf" "$DIST/$out_name"
+        echo "[OK] dist/$out_name genere"
     else
         echo "[ERREUR] Compilation LuaLaTeX echouee - voir workdir/build.log" >&2
         tail -40 "$WORKDIR/build.log" >&2
