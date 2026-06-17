@@ -2,12 +2,11 @@
 diapo:
   model: plain
 content:
-  title: no title
+  title: Title Titre ...
 params:
-  background-color: '#E3E'
+  title:
+    background-color: '#aaa'
 ---
-
-Contenu Markdown de la slide.
 
 - item 1
 
