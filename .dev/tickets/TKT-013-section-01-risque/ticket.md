@@ -29,3 +29,13 @@ dans slide-02
 proposer un les éléments (sous forme de points de forme) à afficher pour chaque variation
 
 rédiger un verbatim pour cette slide
+
+### 2. Inégalité de mosca
+
+ajouter slide `plain` pour présenter ce concept
+
+2 variations:
+
+- explication de l'idée
+- formule mathématique
+
