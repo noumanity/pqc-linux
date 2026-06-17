@@ -27,13 +27,25 @@ s/redhat10
 ```
 
 
+
+
 ```sh
-# environnement de travail
+# environnement de travail, alias et fonctions utilitaires
 mkdir -p results
 alias cbomkit-theia="docker run --rm cbomkit-theia"
 
+check_pqc_support(){
+  URL=$1
+  docker run --rm pqc-enabled sh -lc "echo | openssl s_client -connect $URL:443 -servername $URL -tls1_3 -groups X25519MLKEM768 -brief 2>&1 | grep -Ei 'Protocol|Ciphersuite|Server Temp Key|MLKEM|Verification'"
 
+}
 
+source cbom-report.sh
+```
+
+## Scan et CBOM
+
+```sh
 
 # scan redhat/ubi10-micr0 upstream
 cbomkit-theia image -p opensslconf,certificates redhat/ubi10-micro:latest > results/ubi10-micro-cbom.json
@@ -47,7 +59,11 @@ docker run --rm \
 # extraires les infos pertinentes
 cbom_report results/ubi10-micro-cbom.json
 cbom_report results/pqc-enabled-cbom.json
+```
 
+## Vérifications manuelles
+
+```sh
 
 # Vérifier version openssl
 docker run --rm pqc-enabled openssl version
@@ -57,11 +73,7 @@ docker run --rm pqc-enabled openssl list -kem-algorithms | grep "ML-KEM MLKEM X2
 
 
 # tester une connection
-check_pqc_support(){
-  URL=$1
-  docker run --rm pqc-enabled sh -lc "echo | openssl s_client -connect $URL:443 -servername $URL -tls1_3 -groups X25519MLKEM768 -brief 2>&1 | grep -Ei 'Protocol|Ciphersuite|Server Temp Key|MLKEM|Verification'"
-
-}
-
 check_pqc_support www.cloudflare.com
 check_pqc_support quebec.ca
+
+```
