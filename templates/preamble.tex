@@ -14,5 +14,8 @@
 % Macro pour les listes compactes (produite par le renderer Lua)
 \providecommand{\tightlist}{\setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
 
-% Theme Noumanity (etend metropolis ; copie dans workdir/ par dev.sh gen)
+% Options de theme generees depuis src/theme.yaml
+\InputIfFileExists{theme.generated.tex}{}{}
+
+% Theme Noumanity (etend metropolis)
 \usetheme{Noumanity}

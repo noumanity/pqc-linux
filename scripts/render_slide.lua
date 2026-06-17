@@ -377,6 +377,18 @@ local function normalize_hex(raw)
   return hex
 end
 
+-- Determiner si un fond hex est sombre (utile pour la lisibilite du titre).
+local function is_dark_hex(raw)
+  local hex = normalize_hex(raw)
+  if #hex ~= 6 then return false end
+  local r = tonumber(hex:sub(1,2), 16) or 0
+  local g = tonumber(hex:sub(3,4), 16) or 0
+  local b = tonumber(hex:sub(5,6), 16) or 0
+  -- Luminance percue (BT.601), seuil empirique.
+  local y = (299 * r + 587 * g + 114 * b) / 1000
+  return y < 140
+end
+
 -- Nettoyer la valeur brute d'un champ de chemin (prefixe @, espaces echappes)
 local function clean_path_str(s)
   if type(s) ~= "string" then return s end
@@ -554,18 +566,12 @@ local function build_ctx(meta, body, config, root, workdir_assets)
   for k, v in pairs(config) do ctx[k] = v end
 
   -- Nouveau format : fusionner global-params, params, puis content
-  local title_style = {}
   if meta.diapo then
     local gparams = meta["global-params"] or {}
     local params  = meta.params            or {}
     local content = meta.content           or {}
     for k, v in pairs(gparams)  do ctx[k] = v end
     for k, v in pairs(params)   do ctx[k] = v end
-    -- Capturer les styles de titre avant que content.title écrase le champ
-    if type(params.title) == "table"
-       and (params.title["background-color"] or params.title["font-color"]) then
-      title_style = params.title
-    end
     for k, v in pairs(content)  do ctx[k] = v end
     ctx["model"] = (meta.diapo or {}).model or config["default_model"] or "plain"
   else
@@ -588,17 +594,8 @@ local function build_ctx(meta, body, config, root, workdir_assets)
       ctx["background_block"] = ""
     end
   else
-    local bg_color = ctx["background-color"]
-    if bg_color and type(bg_color) == "string" and bg_color ~= "" then
-      local hex = normalize_hex(bg_color)
-      ctx["background_block"] =
-        "\\definecolor{bgslide}{HTML}{" .. hex .. "}\n"
-        .. "\\begin{tikzpicture}[remember picture, overlay]\n"
-        .. "  \\fill[bgslide] (current page.south west) rectangle (current page.north east);\n"
-        .. "\\end{tikzpicture}"
-    else
-      ctx["background_block"] = ""
-    end
+    -- Option de couleur de fond desactivee : pas de fond uni injecte.
+    ctx["background_block"] = ""
   end
 
   -- Auteurs
@@ -624,27 +621,8 @@ local function build_ctx(meta, body, config, root, workdir_assets)
   end
   ctx["logos_formatted"] = format_logos(logo_paths)
 
-  -- Couleurs du titre de frame (params.title.background-color / font-color)
-  local t_bg = title_style["background-color"]
-  local t_fg = title_style["font-color"]
-  if (t_bg and type(t_bg) == "string" and t_bg ~= "")
-   or (t_fg and type(t_fg) == "string" and t_fg ~= "") then
-    local defs  = {}
-    local parts = {}
-    if t_bg and type(t_bg) == "string" and t_bg ~= "" then
-      defs[#defs+1]   = "\\definecolor{tFrameBg}{HTML}{" .. normalize_hex(t_bg) .. "}"
-      parts[#parts+1] = "bg=tFrameBg"
-    end
-    if t_fg and type(t_fg) == "string" and t_fg ~= "" then
-      defs[#defs+1]   = "\\definecolor{tFrameFg}{HTML}{" .. normalize_hex(t_fg) .. "}"
-      parts[#parts+1] = "fg=tFrameFg"
-    end
-    ctx["title_color_block"] =
-      table.concat(defs, "\n") .. "\n"
-      .. "\\setbeamercolor{frametitle}{" .. table.concat(parts, ",") .. "}"
-  else
-    ctx["title_color_block"] = ""
-  end
+  -- Options de couleur du titre desactivees.
+  ctx["title_color_block"] = ""
 
   -- Corps Markdown
   ctx["content"] = render_body(body)

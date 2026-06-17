@@ -23,6 +23,7 @@ WORKDIR="$ROOT/workdir"
 DIST="$ROOT/dist"
 WORKDIR_TEX="$WORKDIR/tex"
 WORKDIR_ASSETS="$WORKDIR/assets"
+THEME_YAML="$ROOT/src/theme.yaml"
 # config.yaml principal (fallback vers src/global-params.yaml si absent)
 if [ -f "$ROOT/config.yaml" ]; then
     CONFIG_YAML="$ROOT/config.yaml"
@@ -58,6 +59,7 @@ gen() {
     mkdir -p "$WORKDIR_TEX" "$WORKDIR_ASSETS" "$DIST"
 
     cp "$TEMPLATES/theme/"*.sty "$WORKDIR/"
+    texlua "$ROOT/scripts/theme_helper.lua" "$THEME_YAML" "$WORKDIR/theme.generated.tex"
 
     local slide_tex_files=()
     for slide_dir in "$SLIDES_SRC"/slide-*/; do
