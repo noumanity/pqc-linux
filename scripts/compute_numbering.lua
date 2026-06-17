@@ -16,7 +16,7 @@ package.path = script_dir .. "lib/?.lua;" .. texmf_luatex .. "?.lua;" .. package
 
 local tinyyaml = require("markdown-tinyyaml")
 
-local COUNTED_MODELS = { plain = true, tableau = true }
+local COUNTED_MODELS = { plain = true, tableau = true, equation = true }
 
 local function parse_slide_info(path)
   local fh = io.open(path, "r")

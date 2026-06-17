@@ -28,3 +28,21 @@ variations:
 
 - 1. exprliquer idée avec gouvernance vs publication
 - 2. illustrer avec la famille redhat
+
+### 2. tableau des familles redhat
+
+- mettre la diapo 2, variation 2 sous forme de tableau
+
+### 3. estimation de l'importance
+
+Dans @src/slide-05/v2-six-usages.csv
+
+changer la dernière colonne par une estimation chiffée
+
+Par exemple
+
+Linux = 90 % du cloud
+Linux = 100 % des supercalculateurs
+Linux = base des conteneurs
+Android = Linux (71 % du mobile)
+IoT = Linux partout

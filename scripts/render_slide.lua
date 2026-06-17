@@ -618,14 +618,14 @@ local function build_table_tex(rows, col_specs)
   out[#out+1] = "\\small\\begin{tabular}{" .. table.concat(col_parts) .. "}"
   out[#out+1] = "\\toprule"
   for ri, row in ipairs(rows) do
-    -- Lignes impaires (1, 3, 5...) : fond coloré via \cellcolor (fiable dans Beamer).
-    -- \rowcolor est moins fiable car Beamer peut écraser les couleurs de lignes.
-    local colored = (ri % 2) == 1
+    -- Lignes paires (2, 4, 6... = 1re, 3e, 5e données) : fond gris très pâle.
+    -- \cellcolor par cellule est plus fiable que \rowcolor dans Beamer.
+    local colored = (ri % 2) == 0
     local cells = {}
     for ci = 1, ncols do
       local cell = inline_md(tex_escape((row[ci] or ""):match("^%s*(.-)%s*$") or ""))
       if ri == 1 then cell = "\\textbf{" .. cell .. "}" end
-      if colored then cell = "\\cellcolor{red!20}" .. cell end
+      if colored then cell = "\\cellcolor{NouTableRow}" .. cell end
       cells[#cells+1] = cell
     end
     out[#out+1] = table.concat(cells, " & ") .. " \\\\"
@@ -726,6 +726,7 @@ local function build_ctx(meta, body, config, root, workdir_assets)
   ctx["demo_tex"]     = tex_escape(ctx["demo"])
   ctx["location_tex"] = tex_escape(ctx["location"])
   ctx["section_tex"]  = tex_escape(ctx["section"])
+  ctx["equation_tex"] = tex_escape(ctx["equation"])
   ctx["message_tex"]  = inline_md(tex_escape(ctx["message"]))
   ctx["focus_tex"]    = inline_md(tex_escape(ctx["focus"]))
   local qr_url_raw    = (type(ctx["qr-url"]) == "string") and ctx["qr-url"] or ""

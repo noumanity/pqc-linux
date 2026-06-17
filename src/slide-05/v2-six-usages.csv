@@ -1,7 +1,7 @@
-Catégorie,Usage principal,Importance stratégique
-Entreprises et HPC,Systèmes critiques et supercalcul,Très élevée (valeur et criticité)
-Communautaires,"Socle amont, web et bureau avancé",Élevée (amont de l'écosystème)
-Conteneur (images),Base d'images cloud-native,Maximale (centre de gravité actuel)
-Mobile,Téléphones grand public,Maximale en volume (71 % Android)
-IoT et embarqué,"Appareils, routeurs, edge et auto","Élevée et croissante, diffuse"
-Spécialités notables,Hôtes de conteneurs immuables,Élevée (cloud-native moderne)
+Catégorie,Usage principal,Estimation
+Entreprises et HPC,Systèmes critiques et supercalcul,100 % du Top500 ; ~90 % du cloud
+Communautaires,"Socle amont, web et bureau avancé",~70 % des serveurs web
+Conteneur (images),Base d'images cloud-native,~100 % des images de base (Docker / OCI)
+Mobile,Téléphones grand public,~71 % du marché mobile (Android)
+IoT et embarqué,"Appareils, routeurs, edge et auto",> 10 Mds d'appareils connectés
+Spécialités notables,Hôtes de conteneurs immuables,~100 % (Kubernetes et OpenShift)

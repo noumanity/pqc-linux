@@ -39,3 +39,16 @@ ajouter slide `plain` pour présenter ce concept
 - explication de l'idée
 - formule mathématique
 
+### 3. inécalité de Mosca
+
+1. créer un modèle Équation => dérivé de plain (concerve numérotation + section) . 
+
+une équation centrée
+
+2. une seule variation  de type equation avec contenu:
+
+  X (confidentialité) + Y (migration) > Z (Q‑Day)
+
+### 4. réduire la taille de l'équation
+
+réduire la taille de -0.25%

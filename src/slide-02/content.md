@@ -3,35 +3,41 @@ diapo:
   model: plain
   variations: 3
 content:
-  title: "Repenser la menace comme un risque"
+  title: "Prendre en charge le risque: on sait faire"
   section: "Au-delà de fragilité cryptographique : la réponse de l'industrie"
 ---
 
-- Le « risque quantique » est un **déclencheur**, pas le sujet
-- Il touche le **socle** de la cybersécurité : double risque, **négliger** ou se laisser **submerger** par le battage
-- Les deux mènent au même endroit : l'**inaction**
-- *Harvest Now, Decrypt Later* : l'exposition est **déjà présente**
-- Le vrai enjeu : gérer la cryptographie comme un **actif**, vérifier sa chaîne d'approvisionnement
-- Mêmes pratiques **cyber et DevSecOps**, niveau d'exigence relevé
+- Le quantique est un **déclencheur**
+  - on réalise que notre architecture de sécurité n'est pas garanti
+
+- Il faut comprendre le **cycle de vie** et **confidentialité** des **DONNÉES** 
+  - C'est le fameux ***Harvest Now, Decrypt Later (HNDL)***
+
+- L'enjeu est de relevé le niveau de nos pratiques **cyber et DevSecOps**
+  - agir **MAINTENANT** (être prêt)
+  - développer sa **crypto-agilité** (capacité d'intervention rapide sur actifs cryptographiques)
 
 ---
-content:
-  title: "C'est déjà normalisé"
+
+- **Cadres existants** pour le PQC: NIST CSF 2.0, ISO 27005, FAIR
+
+- Standards **NIST** : FIPS 203 **ML-KEM**, 204 **ML-DSA**, 205 **SLH-DSA**
+
+- À l'international : **BSI**, **ANSSI**, **ETSI** ; *Constat de Davos 2026*
+
+- Calendrier : dépréciation vers **2030**, retrait vers **2035**
+
 ---
 
-- Le risque se gère avec les **cadres existants** : NIST CSF 2.0, ISO 27005, FAIR
-- Standards **NIST** (août 2024) : FIPS 203 **ML-KEM**, 204 **ML-DSA**, 205 **SLH-DSA**
-- Relais internationaux : **BSI**, **ANSSI**, **ETSI** ; déclaration du **G7**
-- Calendrier daté : dépréciation vers **2030**, retrait vers **2035**
-- La question n'est plus « si » mais « **quand et comment** »
+### Au Canada
 
----
-content:
-  title: "Et le Canada ?"
----
+- **CCCS** (fédéral)
+  - utilise une variante de NIST CSF 2.0
+  - impose une **Feuille de route** de migration ITSM.40.001 (en vigueur le 23 juin 2025)
+  - **CBOM** obligatoire pour sous-traitants
 
-- Le **Centre canadien pour la cybersécurité** s'appuie sur une variante du NIST CSF
-- **Feuille de route** de migration ITSM.40.001 (en vigueur le 23 juin 2025)
-- **Obligations contraignantes** pour le fédéral et ses sous-traitants, jusqu'au **CBOM**
-- Guide aux organisations **ITSAP.00.017** et mesures d'**accompagnement**
-- Et vous, **en êtes-vous ?**
+- **Pour vous**, obligations de:
+  - connaître ses dépendances cryptographiques
+  - produire un CBOM
+  - planifier la migration PQC
+

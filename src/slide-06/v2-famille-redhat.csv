@@ -1,0 +1,5 @@
+Rôle,Distribution,Posture PQC
+Amont,Fedora,"Intègre PQC en premier (Fedora 42/43, OpenSSL 3.5)"
+Intermédiaire,CentOS Stream,Préfigure la prochaine stable RHEL
+Stable,RHEL,PQC par défaut dès RHEL 10.1
+Héritiers,"AlmaLinux, Rocky, Oracle","Héritent des briques PQC ; propre clé de signature"

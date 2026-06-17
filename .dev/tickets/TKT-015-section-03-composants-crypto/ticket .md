@@ -31,3 +31,15 @@ on aborte la maturité des distrubution
 
 variation 1: tableau comparatif de redhat vs suse vs ubuntu. tableau: distribution + évaluation (leader / challenger / tail) + résumé de ce qui est supporté
 variation 2: tableau famille Redhat. même tableau que la variation 1, mais pour les distributions principales de la famille redhat
+
+### 2. code couleur
+
+Dans le talbeau: Famille redhat posture PQC
+
+
+
+Ajouter le code de couleur emoji =>
+
+🟢 Leader
+🟡 Challenger
+🔴 En retard

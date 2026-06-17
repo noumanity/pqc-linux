@@ -15,10 +15,8 @@ content:
 - Applicable à votre infrastructure, séance tenante
 
 ---
-
-# X + Y > Z
-
-- **X** : durée de confidentialité requise
-- **Y** : temps de migration
-- **Z** : temps avant le *Q-Day*
-- Si X + Y dépasse Z : vous êtes **déjà en retard**
+diapo:
+  model: equation
+content:
+  equation: "X (confidentialité) + Y (migration) > Z (Q-Day)"
+---

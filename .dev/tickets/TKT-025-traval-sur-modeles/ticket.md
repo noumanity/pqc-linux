@@ -122,3 +122,9 @@ pour la première diapo / section , on commence à 1
 
 - remettre en gris (noir noumanity 10%)
 - mettre la couleur sur les lignes pair
+
+### 13. glitch
+
+La couleur noumanity 10% ne fonctionne pas. 
+
+utiliser juste un gris léger standard
