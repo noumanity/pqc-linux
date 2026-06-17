@@ -107,6 +107,6 @@ Effet recherché: un Appel à l'action implicite -> ce n'est pas pas facile pour
 
 ### 1. initialisation des diapos
 
-produire les diapos de 1 à 10 en tant que fichier plan avec son titre et contenu "todo"é
+produire les diapos de 1 à 10 en tant que fichier plan avec son titre et "todo" comme contenu
 
 Mettre le verbatim de chaque diapo dans son fichier verbatim. Et une fois que tous les verbatims sont transférés, supprimé @.dev/artefact/04-vermatim-par-diapo.md

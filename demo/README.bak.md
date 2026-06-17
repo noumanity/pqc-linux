@@ -1,37 +1,21 @@
-# Demo PQC - vérification manuelle et CBOM
+# Demo: PQC sur images linux
 
-## CBOM et cbomkit
+Questions de travail:
+- comment vérifier pour savoir si on prend en charge le risque crypto et à quel niveau de "maturité"?
+- quels critères considérer?
+- que regarder?
 
-![Plateforme cbomkit (IBM)](./assets/cbomkit_platform.webp)
+Définir les types de vérifications possibles:
 
-
-- [CBOM](https://github.com/IBM/CBOM)
-- [cbomkit](https://github.com/cbomkit/cbomkit)
-- [cbomkit-theia](https://github.com/cbomkit/cbomkit-theia)
-- [cbomkit - présentation plateforme par IBM](https://research.ibm.com/blog/quantum-safe-cbomkit)
-
-## Build des images `cbomkit-theia` et `redhat/ubi10-pqc-activated`
-
-```sh
-# obtenir et le cli builder cbomkit-theia
-mkdir /tmp/cbomkit-theia
-cd /tmp/cbomkit-theia
-git clone git@github.com:cbomkit/cbomkit-theia.git .
-docker build -t cbomkit-theia .
-cd -
-alias cbom-theia="docker run --rm cbomkit-theia"
-
-# builder image redhat/ubi10 avec activation PQC au démmarage
-docker build -t pqc-enabled -f ./images/redhat10/Dockerfile.redhat10-pqc-enabled ./image
-s/redhat10
-
-```
+- test manuel
+- scan statiques: code source, iso, image conteneur, ...
+- scan dynamique: certificats présents, librairie + config, ports/protocoles ouvert, traffic réseau
+- autre?
 
 
-```sh
-# scan redhat upstream
+## Candidat: vérifications "manuelles" (no de version + test de fonctionnalités)
 
-
+### Cas image redhat/ubi10:latest (10.2)
 
 
 

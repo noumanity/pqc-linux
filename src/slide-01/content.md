@@ -1,21 +1,19 @@
 ---
 diapo:
   model: plain
+  variations: 2
 content:
-  title: Title Titre ...
-params:
-  title:
-    background-color: '#aaa'
+  title: Plan de la présentation
 ---
 
-- item 1
+- Démonstration de l'algorithme de **Shor** (*brise encryption asymétrique*)
+- Démonstration de l'algorithme de **Grover** (*affaiblit encryption symétrique*)
+- Implémentation naive de Shor avec la librairie de qbit **Qiskit**
+- Lancer une attaque à partir de l'ordinateur quantique d'IBM à Bromont via le portail **PINQ2**
 
-## subtitle
+---
 
-| a | b |
-|---|---|
-| 1 | 2 |
-
-**gras**
-
-*italc*
+- 1. Menace quantique => repenser le risque cryptographique
+- 2. La cryptographie, au coeur de l'infrastructure Linux
+- 3. Déploiement des nouvelles composantes cryptographiques
+- 4. Démo: vérification manuelle et CBOM de redhat/ubi10 
