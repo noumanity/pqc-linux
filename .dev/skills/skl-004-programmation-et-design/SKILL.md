@@ -63,6 +63,7 @@ Trois couches cumulatives à encoder dans les modèles plutôt qu'à improviser 
 - Coder en dur des couleurs, polices ou textes de marque dans un gabarit : violer P3 (lire `branding.yml`).
 - Charger des paquets non utilisés : violer P4.
 - Diapositive saturée, plusieurs idées, listes à puces décoratives, fond photo sans overlay : violer FND-015.
+- **Injecter du contenu fictif ou par défaut depuis le code** : tout champ textuel absent du YAML (titre, sous-titre, texte, etc.) doit rester vide dans le rendu - jamais remplacé par un texte de remplacement inventé par le code. Le code ne génère que la structure LaTeX ; le contenu vient exclusivement des fichiers YAML et Markdown édités par l'humain. Un champ manquant produit un champ vide, pas une valeur substituée.
 
 ## 6. Critères de qualité et de conformité
 
@@ -72,6 +73,7 @@ Trois couches cumulatives à encoder dans les modèles plutôt qu'à improviser 
 - ✅ Paquets chargés en union des besoins des modèles utilisés.
 - ✅ Modèles encodant la grille, la hiérarchie, la palette disciplinée, l'overlay sur fond photo, l'espace blanc.
 - ✅ L'humain n'édite que du Markdown plus en-tête YAML.
+- ✅ Aucun contenu fictif ou substitut injecté par le code : champ absent = rendu vide, jamais une valeur inventée.
 - ✅ Markdown strict dans tout livrable `.md` associé (pas de filet de séparation, pas de hard-wrap, pas de tiret cadratin ; cf. ADR-003 §D8 et `.dev/CLAUDE.md`).
 
 ## 7. Note sur l'état actuel (à corriger en TKT-002 tâche 6)

@@ -1,0 +1,27 @@
+name: title
+description: "Page de titre de la presentation"
+fields:
+  content:
+    required: []
+    optional:
+      - name: title
+        description: "Surcharge le titre global de config.yaml"
+        type: string
+      - name: subtitle
+        description: "Surcharge le sous-titre global de config.yaml"
+        type: string
+      - name: background
+        description: "Chemin vers l'image de fond (SVG, PNG, JPEG)"
+        type: path
+  params:
+    optional: []
+notes: >
+  Les champs authors, demo, date, event et logos proviennent de config.yaml.
+  La section content: ne peut que surcharger title et subtitle.
+example: |
+  ---
+  diapo:
+    model: title
+  content:
+    title: Titre specifique de cette variation
+  ---

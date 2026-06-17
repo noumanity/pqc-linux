@@ -1,11 +1,10 @@
 #!/usr/bin/env texlua
--- render_slide.lua - convertit content.md en frame LaTeX Beamer
+-- render_slide.lua - convertit content.md en frame(s) LaTeX Beamer
 -- Usage: texlua render_slide.lua <content.md> <config.yaml> <output.tex> <templates_dir> <workdir_assets>
 -- Stack: texlua (TeX Live), tinyyaml (TeX Live), etlua (scripts/lib/), Markdown maison
 -- Conforme ADR-001 : ni Python ni pandoc.
 
--- Chemins des bibliotheques
-local script_dir = (arg[0] or ""):match("(.*[/\\])") or "./"
+local script_dir   = (arg[0] or ""):match("(.*[/\\])") or "./"
 local texmf_luatex = "/usr/share/texlive/texmf-dist/tex/luatex/markdown/"
 package.path = script_dir .. "lib/?.lua;"
              .. script_dir .. "?.lua;"
@@ -15,17 +14,16 @@ package.path = script_dir .. "lib/?.lua;"
 local etlua    = require("etlua")
 local tinyyaml = require("markdown-tinyyaml")
 
--- Correspondances noms de champs francais -> anglais canonique
+-- Correspondances noms de champs francais -> anglais canonique (format ancien)
 local FIELD_MAP = {
-  ["Titre"]        = "title",
-  ["Auteurs"]      = "authors",
-  ["Demo"]         = "demo",
-  ["Preparefor"]   = "event",   -- apres normalisation des espaces (voir normalize_keys)
-  ["Date"]         = "date",
-  ["Lieu"]         = "location",
+  ["Titre"]      = "title",
+  ["Auteurs"]    = "authors",
+  ["Demo"]       = "demo",
+  ["Preparefor"] = "event",
+  ["Date"]       = "date",
+  ["Lieu"]       = "location",
 }
 
--- Escape LaTeX caractere par caractere (safe UTF-8 : les octets > 127 passent sans changement)
 local TEX_ESCAPES = {
   ["\\"] = "\\textbackslash{}",
   ["{"]  = "\\{",
@@ -40,19 +38,16 @@ local TEX_ESCAPES = {
 }
 
 local function tex_escape(s)
-  if type(s) ~= "string" then s = tostring(s or "") end
+  -- yaml.null de tinyyaml est une table ; nil et tables -> chaine vide
+  if type(s) == "table" then s = ""
+  elseif type(s) ~= "string" then s = tostring(s or "") end
   return (s:gsub(".", function(c) return TEX_ESCAPES[c] or c end))
 end
 
--- Rendu inline Markdown -> LaTeX (**gras**, *italic*, `code`)
--- Appele APRES tex_escape sur la partie texte brut.
 local function inline_md(s)
-  -- Gras: **text** -> \textbf{text}
   s = s:gsub("%*%*(.-)%*%*", "\\textbf{%1}")
-  -- Italique: *text* -> \emph{text}
-  s = s:gsub("%*(.-)%*", "\\emph{%1}")
-  -- Code: `text` -> \texttt{text}
-  s = s:gsub("`(.-)`", "\\texttt{%1}")
+  s = s:gsub("%*(.-)%*",     "\\emph{%1}")
+  s = s:gsub("`(.-)`",       "\\texttt{%1}")
   return s
 end
 
@@ -60,7 +55,6 @@ local function process_line(raw)
   return inline_md(tex_escape(raw))
 end
 
--- Rendu du corps Markdown (blocs : paragraphes, listes a 2 niveaux)
 local function render_body(text)
   if not text or text:match("^%s*$") then return "" end
 
@@ -70,7 +64,7 @@ local function render_body(text)
   end
 
   local out   = {}
-  local state = "para"   -- "para" | "item1" | "item2"
+  local state = "para"
   local para  = {}
 
   local function flush_para()
@@ -133,83 +127,161 @@ local function render_body(text)
   return table.concat(out, "\n")
 end
 
--- Lecture du front matter YAML et du corps d'un content.md
-local function parse_frontmatter(path)
-  local fh = assert(io.open(path, "r"), "Impossible d'ouvrir : " .. path)
+-- Fusion profonde de deux tables (override ecrase base)
+local function deep_merge(base, override)
+  if type(base) ~= "table" or type(override) ~= "table" then
+    return override
+  end
+  local result = {}
+  for k, v in pairs(base) do result[k] = v end
+  for k, v in pairs(override) do
+    if type(v) == "table" and type(result[k]) == "table" then
+      result[k] = deep_merge(result[k], v)
+    else
+      result[k] = v
+    end
+  end
+  return result
+end
+
+-- Detecter si un segment ressemble a du YAML
+local function is_yaml_like(s)
+  return s:match("^%s*[%a][%a%d%-_]*%s*:") ~= nil
+end
+
+-- Nettoyer la valeur brute d'un champ de chemin (prefixe @, espaces echappes)
+local function clean_path_str(s)
+  if type(s) ~= "string" then return s end
+  return s:gsub("^@", ""):gsub("\\ ", " ")
+end
+
+-- Parser un YAML brut (apres nettoyage des artefacts IDE)
+local function parse_yaml_str(s)
+  s = s:gsub("@([./])", "%1"):gsub("\\ ", " ")
+  local ok, data = pcall(tinyyaml.parse, s)
+  if ok and type(data) == "table" then return data end
+  return nil
+end
+
+-- Lire content.md et retourner la liste des variations
+-- Chaque variation : { meta={}, body="" }
+-- Le meta de la variation N est la fusion de tous les metas precedents.
+local function parse_content_file(path)
+  local fh  = assert(io.open(path, "r"), "Impossible d'ouvrir : " .. path)
   local raw = fh:read("*a")
   fh:close()
 
-  if not raw:match("^%-%-%-") then return {}, raw end
-
-  local front_end = raw:find("\n%-%-%-", 4)
-  if not front_end then return {}, raw end
-
-  local front_str = raw:sub(4, front_end - 1)
-  local body      = raw:sub(front_end + 4):match("^%s*(.*%S)%s*$") or ""
-
-  -- Neutraliser le prefixe @ (notation IDE, invalide en YAML)
-  front_str = front_str:gsub("@([./])", "%1")
-  -- Denormaliser les espaces echappes shell (\ ) en espaces reels
-  front_str = front_str:gsub("\\ ", " ")
-
-  local ok, meta = pcall(tinyyaml.parse, front_str)
-  if not ok then
-    io.stderr:write("[WARN] YAML parse error : " .. tostring(meta) .. "\n")
-    return {}, body
-  end
-  return meta or {}, body
-end
-
--- Normalisation des cles (suppression espaces, accents courants, puis FIELD_MAP)
-local function normalize_key(k)
-  -- Retirer espaces et accents pour un matching robuste
-  local plain = k:gsub(" ", ""):gsub("\195\169", "e"):gsub("\195\168", "e")
-                  :gsub("\195\160", "a"):gsub("\195\180", "o"):gsub("\195\170", "e")
-  return FIELD_MAP[plain] or FIELD_MAP[k] or k:lower()
-end
-
-local function normalize_fields(meta)
-  local out = {}
-  for k, v in pairs(meta) do
-    out[normalize_key(k)] = v
-  end
-  return out
-end
-
--- Resolution d'un chemin d'asset (strip @, normalise, fallback, convertit si besoin)
-local function resolve_asset(raw, root, workdir_assets)
-  if type(raw) ~= "string" then return nil end
-  raw = raw:gsub("^@", ""):gsub("\\ ", " ")
-
-  local function exists(p)
-    local fh = io.open(p, "r")
-    if fh then fh:close() return true end
-    return false
-  end
-
-  local candidate = root .. "/" .. raw
-  if not exists(candidate) then
-    -- Repli : .dev/assets/ -> assets/branding/
-    local alt = raw:gsub("%.dev/assets/", "assets/branding/")
-    local alt_candidate = root .. "/" .. alt
-    if exists(alt_candidate) then
-      candidate = alt_candidate
+  -- Couper sur les lignes "---" seules
+  local segments = {}
+  local buf      = {}
+  for line in (raw .. "\n"):gmatch("([^\n]*)\n") do
+    if line == "---" then
+      segments[#segments+1] = table.concat(buf, "\n")
+      buf = {}
     else
-      io.stderr:write("[WARN] Asset introuvable : " .. raw .. "\n")
-      return nil
+      buf[#buf+1] = line
+    end
+  end
+  if #buf > 0 then segments[#segments+1] = table.concat(buf, "\n") end
+
+  -- Format ancien : pas de clé "diapo" => une seule variation, YAML flat
+  -- Detecter en parsant le premier segment non-vide (segments[2])
+  local first_yaml = segments[2] or ""
+  local first_meta = parse_yaml_str(first_yaml) or {}
+
+  if first_meta.diapo == nil then
+    -- Format ancien : compatibilite
+    local body = ""
+    -- Le corps est tout ce qui suit le deuxieme "---"
+    -- = segments[3] concatène le reste
+    for i = 3, #segments do
+      body = body .. (i > 3 and "\n---\n" or "") .. segments[i]
+    end
+    body = body:match("^%s*(.*%S)%s*$") or ""
+
+    -- Normaliser les cles francaises
+    local meta_norm = {}
+    for k, v in pairs(first_meta) do
+      local plain = k:gsub(" ",""):gsub("\195\169","e"):gsub("\195\168","e")
+                     :gsub("\195\160","a"):gsub("\195\180","o"):gsub("\195\170","e")
+      local canonical = FIELD_MAP[plain] or FIELD_MAP[k] or k:lower()
+      meta_norm[canonical] = v
+    end
+    return {{ meta = meta_norm, body = body }}
+  end
+
+  -- Nouveau format : paires (yaml_segment, content_segment)
+  -- segments[1] vide, segments[2..] alternent yaml/content
+  local raw_variations = {}
+  local i = 2
+  while i <= #segments do
+    local seg = segments[i]
+    if is_yaml_like(seg) then
+      local body = (segments[i+1] or ""):match("^%s*(.*%S)%s*$") or ""
+      raw_variations[#raw_variations+1] = { yaml_raw = seg, body = body }
+      i = i + 2
+    else
+      local body = seg:match("^%s*(.*%S)%s*$") or ""
+      raw_variations[#raw_variations+1] = { yaml_raw = nil, body = body }
+      i = i + 1
     end
   end
 
-  local ext  = candidate:match("%.(%w+)$"):lower()
-  local stem = candidate:match("([^/\\]+)%.[^%.]+$"):gsub("[^%w%.%-]", "_")
+  -- Fusionner les metas en cascade
+  local variations = {}
+  local prev_meta  = {}
+  for _, rv in ipairs(raw_variations) do
+    local cur_meta = {}
+    if rv.yaml_raw then
+      cur_meta = parse_yaml_str(rv.yaml_raw) or {}
+    end
+    local merged = deep_merge(prev_meta, cur_meta)
+    prev_meta = merged
+    variations[#variations+1] = { meta = merged, body = rv.body }
+  end
+  return variations
+end
+
+local function resolve_asset(raw, root, workdir_assets)
+  if type(raw) ~= "string" then return nil end
+  raw = clean_path_str(raw)
+
+  local function exists(p)
+    local fh = io.open(p, "r")
+    if fh then fh:close(); return true end
+    return false
+  end
+
+  -- Ordre de recherche :
+  -- 1. Chemin relatif a ROOT (ex. src/assets/logo.svg)
+  -- 2. Nom de fichier dans src/assets/ (ex. logo.svg -> src/assets/logo.svg)
+  -- 3. Retro-compat : .dev/assets/ -> assets/branding/
+  local basename = raw:match("[^/\\]+$") or raw
+  local candidates = {
+    root .. "/" .. raw,
+    root .. "/src/assets/" .. basename,
+    root .. "/" .. raw:gsub("%.dev/assets/", "assets/branding/"),
+  }
+
+  local candidate
+  for _, c in ipairs(candidates) do
+    if exists(c) then candidate = c; break end
+  end
+
+  if not candidate then
+    io.stderr:write("[WARN] Asset introuvable : " .. raw .. "\n")
+    return nil
+  end
+
+  local ext  = (candidate:match("%.(%w+)$") or ""):lower()
+  local stem = (candidate:match("([^/\\]+)%.[^%.]+$") or "file"):gsub("[^%w%.%-]", "_")
 
   if ext == "svg" then
     local target = workdir_assets .. "/" .. stem .. ".pdf"
     if not exists(target) then
-      local cmd = string.format(
+      os.execute(string.format(
         "inkscape --export-type=pdf --export-filename=%q %q 2>/dev/null",
-        target, candidate)
-      os.execute(cmd)
+        target, candidate))
     end
     return target
   end
@@ -225,6 +297,19 @@ local function resolve_asset(raw, root, workdir_assets)
   return candidate
 end
 
+-- Lire un fichier verbatim.md : skipper le front matter YAML si present
+local function read_verbatim_body(path)
+  local fh = io.open(path, "r")
+  if not fh then return "" end
+  local s = fh:read("*a")
+  fh:close()
+  if s:match("^%-%-%-") then
+    local front_end = s:find("\n%-%-%-", 4)
+    if front_end then s = s:sub(front_end + 4) end
+  end
+  return s:match("^%s*(.*%S)%s*$") or ""
+end
+
 local function format_logos(paths)
   if not paths or #paths == 0 then return "" end
   local items = {}
@@ -234,52 +319,30 @@ local function format_logos(paths)
   return table.concat(items, "\\hspace{1.5em}")
 end
 
--- Point d'entree
-local function main()
-  if #arg < 5 then
-    print("Usage: texlua render_slide.lua <content.md> <config.yaml> <output.tex> <templates_dir> <workdir_assets>")
-    os.exit(1)
-  end
-
-  local content_md, config_yaml, output_tex, templates_dir, workdir_assets =
-    arg[1], arg[2], arg[3], arg[4], arg[5]
-
-  local root = os.getenv("PRESENTATION_ROOT") or "."
-
-  -- Creer workdir_assets si absent
-  os.execute("mkdir -p " .. workdir_assets)
-
-  -- Lire le slide
-  local meta, body = parse_frontmatter(content_md)
-  meta = normalize_fields(meta)
-
-  -- Lire config.yaml
-  local fh = assert(io.open(config_yaml, "r"))
-  local config_str = fh:read("*a"); fh:close()
-  local ok, config = pcall(tinyyaml.parse, config_str)
-  if not ok then config = {} end
-  config = config or {}
-
-  -- Determiner le modele
-  local model = meta["model"]
-  if not model then
-    model = meta["authors"] and "title" or (config["default_model"] or "plain")
-  end
-
-  -- Charger le gabarit etlua
-  local tpl_path = templates_dir .. "/models/" .. model .. ".tex"
-  local fh2 = assert(io.open(tpl_path, "r"), "Gabarit introuvable : " .. tpl_path)
-  local template = fh2:read("*a"); fh2:close()
-
-  -- Construire le contexte (config d'abord, slide par-dessus)
+-- Construire le contexte etlua a partir de meta + body + config
+local function build_ctx(meta, body, config, root, workdir_assets)
+  -- Couche de base : config global
   local ctx = {}
   for k, v in pairs(config) do ctx[k] = v end
-  for k, v in pairs(meta)   do ctx[k] = v end
 
-  -- Background
-  local bg_raw = ctx["background"]
+  -- Nouveau format : fusionner global-params, params, puis content
+  if meta.diapo then
+    local gparams = meta["global-params"] or {}
+    local params  = meta.params            or {}
+    local content = meta.content           or {}
+    for k, v in pairs(gparams)  do ctx[k] = v end
+    for k, v in pairs(params)   do ctx[k] = v end
+    for k, v in pairs(content)  do ctx[k] = v end
+    ctx["model"] = (meta.diapo or {}).model or config["default_model"] or "plain"
+  else
+    -- Format ancien : champs plats
+    for k, v in pairs(meta) do ctx[k] = v end
+  end
+
+  -- Background : supporte "background" et "background-image" (alias)
+  local bg_raw = ctx["background"] or ctx["background-image"]
   if bg_raw and bg_raw ~= "" then
-    local bg_path = resolve_asset(bg_raw, root, workdir_assets)
+    local bg_path = resolve_asset(clean_path_str(bg_raw), root, workdir_assets)
     if bg_path then
       ctx["background_block"] =
         "\\begin{tikzpicture}[remember picture, overlay]\n"
@@ -301,18 +364,18 @@ local function main()
   for _, a in ipairs(authors) do auth_parts[#auth_parts+1] = tex_escape(a) end
   ctx["authors_formatted"] = table.concat(auth_parts, " \\\\ ")
 
-  -- Champs texte
-  ctx["title_tex"]    = tex_escape(tostring(ctx["title"]    or ""))
-  ctx["subtitle_tex"] = tex_escape(tostring(ctx["subtitle"] or ""))
-  ctx["event_tex"]    = tex_escape(tostring(ctx["event"]    or ""))
-  ctx["date_tex"]     = tex_escape(tostring(ctx["date"]     or ""))
-  ctx["demo_tex"]     = tex_escape(tostring(ctx["demo"]     or ""))
+  -- Champs texte (tex_escape gere nil et yaml.null = table -> chaine vide)
+  ctx["title_tex"]    = tex_escape(ctx["title"])
+  ctx["subtitle_tex"] = tex_escape(ctx["subtitle"])
+  ctx["event_tex"]    = tex_escape(ctx["event"])
+  ctx["date_tex"]     = tex_escape(ctx["date"])
+  ctx["demo_tex"]     = tex_escape(ctx["demo"])
 
   -- Logos
   local logos_raw = ctx["logos"] or {}
   local logo_paths = {}
   for _, lr in ipairs(logos_raw) do
-    local p = resolve_asset(lr, root, workdir_assets)
+    local p = resolve_asset(clean_path_str(lr), root, workdir_assets)
     if p then logo_paths[#logo_paths+1] = p end
   end
   ctx["logos_formatted"] = format_logos(logo_paths)
@@ -320,14 +383,79 @@ local function main()
   -- Corps Markdown
   ctx["content"] = render_body(body)
 
-  -- Rendre le gabarit avec etlua
-  local compiled = assert(etlua.compile(template))
-  local rendered = compiled(ctx)
+  return ctx
+end
+
+local function main()
+  if #arg < 5 then
+    print("Usage: texlua render_slide.lua <content.md> <config.yaml> <output.tex> <templates_dir> <workdir_assets> [<verbatim.md> <slide_num>]")
+    os.exit(1)
+  end
+
+  local content_md, config_yaml, output_tex, templates_dir, workdir_assets =
+    arg[1], arg[2], arg[3], arg[4], arg[5]
+  local verbatim_md = arg[6]
+  local slide_num   = arg[7] or ""
+
+  local root = os.getenv("PRESENTATION_ROOT") or "."
+  os.execute("mkdir -p " .. workdir_assets)
+
+  -- Lire src/global-params.yaml comme couche de base (si present)
+  local global_params = {}
+  local gp_fh = io.open(root .. "/src/global-params.yaml", "r")
+  if gp_fh then
+    local gp_str = gp_fh:read("*a"); gp_fh:close()
+    local gp_ok, gp_data = pcall(tinyyaml.parse, gp_str)
+    if gp_ok and type(gp_data) == "table" then global_params = gp_data end
+  end
+
+  -- Lire config.yaml et le fusionner par-dessus global-params
+  local fh = assert(io.open(config_yaml, "r"))
+  local config_str = fh:read("*a"); fh:close()
+  local ok, config_raw = pcall(tinyyaml.parse, config_str)
+  if not ok then config_raw = {} end
+  local config = deep_merge(global_params, config_raw or {})
+
+  -- Cache des gabarits
+  local tpl_cache = {}
+  local function load_template(model)
+    if tpl_cache[model] then return tpl_cache[model] end
+    local tpl_path = templates_dir .. "/models/" .. model .. ".tex"
+    local fh2 = assert(io.open(tpl_path, "r"), "Gabarit introuvable : " .. tpl_path)
+    local tpl = fh2:read("*a"); fh2:close()
+    tpl_cache[model] = tpl
+    return tpl
+  end
+
+  local frames = {}
+
+  if verbatim_md then
+    -- Mode verbatim : titre extrait du content.md, corps lu depuis verbatim.md
+    local variations = parse_content_file(content_md)
+    local first_meta = (variations[1] or { meta = {} }).meta
+    local vbody      = read_verbatim_body(verbatim_md)
+    local ctx        = build_ctx(first_meta, vbody, config, root, workdir_assets)
+    ctx["slide_num"] = tex_escape(slide_num)
+    local tpl        = load_template("verbatim")
+    local compiled   = assert(etlua.compile(tpl))
+    frames[#frames+1] = compiled(ctx)
+  else
+    -- Mode normal : rendre chaque variation du slide
+    local variations = parse_content_file(content_md)
+    for _, var in ipairs(variations) do
+      local model = var.meta["model"] or config["default_model"] or "plain"
+      local ctx   = build_ctx(var.meta, var.body, config, root, workdir_assets)
+      local tpl   = load_template(model)
+      local compiled = assert(etlua.compile(tpl))
+      frames[#frames+1] = compiled(ctx)
+    end
+  end
 
   -- Ecrire le .tex de sortie
-  os.execute("mkdir -p " .. output_tex:match("(.*[/\\])"))
+  local out_dir = output_tex:match("(.*[/\\])")
+  if out_dir then os.execute("mkdir -p " .. out_dir) end
   local fh3 = assert(io.open(output_tex, "w"))
-  fh3:write(rendered)
+  fh3:write(table.concat(frames, "\n"))
   fh3:close()
   io.write("[OK] " .. output_tex .. "\n")
 end
