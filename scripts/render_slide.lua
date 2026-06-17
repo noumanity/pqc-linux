@@ -183,6 +183,169 @@ local function render_body(text)
   return table.concat(out, "\n")
 end
 
+-- Decouper un texte en blocs markdown separes par ligne vide.
+local function split_markdown_blocks(text)
+  local blocks = {}
+  local current = {}
+  for line in (text .. "\n"):gmatch("([^\n]*)\n") do
+    if line:match("^%s*$") then
+      if #current > 0 then
+        blocks[#blocks+1] = table.concat(current, "\n")
+        current = {}
+      end
+    else
+      current[#current+1] = line
+    end
+  end
+  if #current > 0 then
+    blocks[#blocks+1] = table.concat(current, "\n")
+  end
+  return blocks
+end
+
+-- Organiser des blocs markdown en pages verbatim a 2 colonnes.
+-- Heuristique par lignes virtuelles (retours a la ligne implicites inclus).
+local function paginate_verbatim_blocks(text)
+  local COL_WRAP_CHARS = 50
+  local MAX_COL_LINES = 22
+
+  local function estimate_line_cost(line)
+    local raw = line:gsub("^%s+", ""):gsub("%s+$", "")
+    if raw == "" then return 1 end
+    local extra = 0
+    if raw:match("^%s*[%-%*]%s+") then extra = extra + 1 end
+    if raw:match("^%s*#+%s+") then extra = extra + 1 end
+    if raw:match("^\textbf%b{}%s*$") then extra = extra + 1 end
+    local chars = #raw
+    local wraps = math.max(1, math.ceil(chars / COL_WRAP_CHARS))
+    return wraps + extra
+  end
+
+  local function estimate_block_cost(block)
+    local cost = 0
+    for line in (block .. "\n"):gmatch("([^\n]*)\n") do
+      cost = cost + estimate_line_cost(line)
+    end
+    return cost
+  end
+
+  local function split_long_line(line)
+    local words = {}
+    for w in line:gmatch("%S+") do words[#words+1] = w end
+    if #words == 0 then return {""} end
+    local out = {}
+    local cur = ""
+    for _, w in ipairs(words) do
+      local candidate = (cur == "") and w or (cur .. " " .. w)
+      if #candidate > COL_WRAP_CHARS and cur ~= "" then
+        out[#out+1] = cur
+        cur = w
+      else
+        cur = candidate
+      end
+    end
+    if cur ~= "" then out[#out+1] = cur end
+    return out
+  end
+
+  local function split_block_to_fit(block)
+    local chunks = {}
+    local cur_lines = {}
+    local cur_cost = 0
+
+    local function flush_chunk()
+      if #cur_lines > 0 then
+        chunks[#chunks+1] = table.concat(cur_lines, "\n")
+        cur_lines = {}
+        cur_cost = 0
+      end
+    end
+
+    for line in (block .. "\n"):gmatch("([^\n]*)\n") do
+      local split_lines = split_long_line(line)
+      for _, sl in ipairs(split_lines) do
+        local lc = estimate_line_cost(sl)
+        if cur_cost > 0 and (cur_cost + lc) > MAX_COL_LINES then
+          flush_chunk()
+        end
+        cur_lines[#cur_lines+1] = sl
+        cur_cost = cur_cost + lc
+      end
+    end
+    flush_chunk()
+
+    if #chunks == 0 then return {""} end
+    return chunks
+  end
+
+  local blocks = split_markdown_blocks(text)
+  if #blocks == 0 then return { { left = "", right = "" } } end
+
+  -- Aplatir les blocs pour qu'aucun bloc ne puisse depasser une colonne.
+  local fitted_blocks = {}
+  for _, b in ipairs(blocks) do
+    if estimate_block_cost(b) > MAX_COL_LINES then
+      local pieces = split_block_to_fit(b)
+      for _, p in ipairs(pieces) do fitted_blocks[#fitted_blocks+1] = p end
+    else
+      fitted_blocks[#fitted_blocks+1] = b
+    end
+  end
+
+  local pages = {}
+  local current_page = {
+    left_parts = {}, right_parts = {}, left_cost = 0, right_cost = 0, side = "left"
+  }
+
+  local function flush_page()
+    if #current_page.left_parts == 0 and #current_page.right_parts == 0 then return end
+    pages[#pages+1] = {
+      left = table.concat(current_page.left_parts, "\n\n"),
+      right = table.concat(current_page.right_parts, "\n\n"),
+    }
+    current_page = {
+      left_parts = {}, right_parts = {}, left_cost = 0, right_cost = 0, side = "left"
+    }
+  end
+
+  local function push_to_left(block, cost)
+    current_page.left_parts[#current_page.left_parts+1] = block
+    current_page.left_cost = current_page.left_cost + cost
+  end
+
+  local function push_to_right(block, cost)
+    current_page.right_parts[#current_page.right_parts+1] = block
+    current_page.right_cost = current_page.right_cost + cost
+  end
+
+  for _, block in ipairs(fitted_blocks) do
+    local cost = estimate_block_cost(block)
+    local placed = false
+
+    if current_page.side == "left" and (current_page.left_cost + cost) <= MAX_COL_LINES then
+      push_to_left(block, cost)
+      placed = true
+    elseif current_page.side == "left" then
+      current_page.side = "right"
+    end
+
+    if not placed and current_page.side == "right" and (current_page.right_cost + cost) <= MAX_COL_LINES then
+      push_to_right(block, cost)
+      placed = true
+    end
+
+    if not placed then
+      flush_page()
+      push_to_left(block, cost)
+      current_page.side = "left"
+    end
+  end
+
+  flush_page()
+  if #pages == 0 then return { { left = "", right = "" } } end
+  return pages
+end
+
 -- Fusion profonde de deux tables (override ecrase base)
 local function deep_merge(base, override)
   if type(base) ~= "table" or type(override) ~= "table" then
@@ -537,16 +700,27 @@ local function main()
     local variations = parse_content_file(content_md)
     local first_meta = (variations[1] or { meta = {} }).meta
     local vbody      = read_verbatim_body(verbatim_md)
-    local ctx        = build_ctx(first_meta, vbody, config, root, workdir_assets)
-    ctx["slide_num"] = tex_escape(slide_num)
+    local base_ctx   = build_ctx(first_meta, "", config, root, workdir_assets)
+    local pages      = paginate_verbatim_blocks(vbody)
     local tpl        = load_template("verbatim")
     local compiled   = assert(etlua.compile(tpl))
-    frames[#frames+1] = compiled(ctx)
+
+    for _, p in ipairs(pages) do
+      local ctx = {}
+      for k, v in pairs(base_ctx) do ctx[k] = v end
+      ctx["slide_num"] = tex_escape(slide_num)
+      ctx["left_content"] = render_body(p.left)
+      ctx["right_content"] = render_body(p.right)
+      frames[#frames+1] = compiled(ctx)
+    end
   else
     -- Mode normal : rendre chaque variation du slide
     local variations = parse_content_file(content_md)
     for _, var in ipairs(variations) do
-      local model = var.meta["model"] or config["default_model"] or "plain"
+      local model = ((var.meta.diapo or {}).model)
+                 or var.meta["model"]
+                 or config["default_model"]
+                 or "plain"
       local ctx   = build_ctx(var.meta, var.body, config, root, workdir_assets)
       local tpl   = load_template(model)
       local compiled = assert(etlua.compile(tpl))

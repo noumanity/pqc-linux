@@ -1,11 +1,16 @@
 % Modele : verbatim - notes de la diapositive (2 colonnes, allowframebreaks)
 % Champs obligatoires : slide_num, title_tex, content
-% Champs optionnels  : (aucun)
-\begin{frame}[allowframebreaks,t]
+% Champs optionnels  : left_content, right_content
+\begin{frame}[t]
 \frametitle{<%- slide_num %> - <%- title_tex %>}
-\setlength{\columnseprule}{0.3pt}
-\begin{multicols}{2}
+\begin{columns}[T,onlytextwidth]
+\begin{column}{0.49\textwidth}
 \small
-<%- content %>
-\end{multicols}
+<%- left_content %>
+\end{column}
+\begin{column}{0.49\textwidth}
+\small
+<%- right_content %>
+\end{column}
+\end{columns}
 \end{frame}

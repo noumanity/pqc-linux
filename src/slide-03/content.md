@@ -1,7 +1,7 @@
 ---
 diapo:
   model: plain
-contain:
+content:
   title: Tester le verbatim
 ---
 

@@ -1,10 +1,11 @@
 % Modele : plain - titre + contenu libre (corps Markdown rendu en LaTeX)
 % Champs obligatoires : title_tex, content
 % Champs optionnels  : background_block, title_color_block
+{%
 <%- title_color_block %>
 \begin{frame}
 <%- background_block %>
 \frametitle{<%- title_tex %>}
 <%- content %>
 \end{frame}
-\setbeamercolor{frametitle}{bg=,fg=NoumanityBlack}
+}
