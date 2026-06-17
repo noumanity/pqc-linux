@@ -8,12 +8,12 @@ content:
 
 - Démonstration de l'algorithme de **Shor** (*brise encryption asymétrique*)
 - Démonstration de l'algorithme de **Grover** (*affaiblit encryption symétrique*)
-- Implémentation naive de Shor avec la librairie de qbit **Qiskit**
+- Implémentation naïve de Shor avec la librairie de qbit **Qiskit**
 - Lancer une attaque à partir de l'ordinateur quantique d'IBM à Bromont via le portail **PINQ2**
 
 ---
 
-- 1. Au-delà de fragilité cryptographique: la réponses de l'industrie
+- 1. Au-delà de fragilité cryptographique : la réponse de l'industrie
 
 - 2. La cryptographie, au coeur de l'infrastructure Linux
 

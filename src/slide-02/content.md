@@ -8,12 +8,12 @@ content:
 ---
 
 - Le quantique est un **déclencheur**
-  - on réalise que notre architecture de sécurité n'est pas garanti
+  - on réalise que notre architecture de sécurité n'est pas garantie
 
-- Il faut comprendre le **cycle de vie** et **confidentialité** des **DONNÉES** 
+- Il faut comprendre le **cycle de vie** et la **confidentialité** des **DONNÉES**
   - C'est le fameux ***Harvest Now, Decrypt Later (HNDL)***
 
-- L'enjeu est de relevé le niveau de nos pratiques **cyber et DevSecOps**
+- L'enjeu est de relever le niveau de nos pratiques **cyber et DevSecOps**
   - agir **MAINTENANT** (être prêt)
   - développer sa **crypto-agilité** (capacité d'intervention rapide sur actifs cryptographiques)
 
